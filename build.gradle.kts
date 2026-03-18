@@ -3,7 +3,7 @@ import org.gradle.kotlin.dsl.kotlin
 plugins {
     `java-library`
     `maven-publish`
-    kotlin("jvm")
+    kotlin("jvm") version "2.3.10"
 }
 
 repositories {
