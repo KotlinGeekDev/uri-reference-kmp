@@ -1,9 +1,7 @@
-import org.gradle.kotlin.dsl.kotlin
-
 plugins {
-    `java-library`
+//    `java-library`
     `maven-publish`
-    kotlin("jvm") version "2.3.10"
+    kotlin("multiplatform") version "2.3.10"
 }
 
 repositories {
@@ -15,13 +13,52 @@ repositories {
 }
 kotlin {
     jvmToolchain(21)
-}
 
-dependencies {
-    testImplementation(libs.org.junit.jupiter.junit.jupiter.api)
-    testImplementation(libs.org.junit.jupiter.junit.jupiter.engine)
-    testImplementation(libs.org.junit.jupiter.junit.jupiter.params)
-    implementation(kotlin("stdlib"))
+    jvm {
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+            testLogging {
+                events("passed", "skipped", "failed")
+            }
+        }
+    }
+
+//    androidTarget()
+    iosArm64()
+    iosSimulatorArm64()
+    iosX64()
+    linuxX64()
+    mingwX64()
+
+    macosX64()
+    macosArm64()
+
+    applyDefaultHierarchyTemplate()
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(kotlin("stdlib"))
+            implementation("com.fleeksoft.io:io:0.0.8")
+        }
+        commonTest.dependencies {
+
+        }
+        jvmMain.dependencies {
+
+        }
+        jvmTest.dependencies {
+            val junitJupiterVersion = "5.10.0"
+            implementation(kotlin("test-junit5"))
+
+            implementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+            implementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
+            implementation("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+            runtimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+            runtimeOnly("org.junit.vintage:junit-vintage-engine:$junitJupiterVersion")
+        }
+    }
+
+
 }
 
 group = "org.czeal"
@@ -30,12 +67,8 @@ description = "Java URI Library Compliant with RFC 3986"
 
 publishing {
     publications.create<MavenPublication>("maven") {
-        from(components["java"])
+        from(components["kotlin"])
     }
-}
-
-tasks.withType<JavaCompile>() {
-    options.encoding = "UTF-8"
 }
 
 tasks.withType<Javadoc>() {
