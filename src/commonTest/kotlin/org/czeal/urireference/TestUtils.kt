@@ -15,8 +15,9 @@
  */
 package org.czeal.urireference
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
 
 object TestUtils {
@@ -28,15 +29,14 @@ object TestUtils {
     fun <T : Throwable?> assertThrowsNPE(
         message: String?, executable: InlineExecutable
     ) {
-        assertThrowsException(NullPointerException::class.java, message, executable)
+        assertThrowsException<NullPointerException>(message, executable)
     }
 
 
     fun <T : Throwable?> assertThrowsIAE(
         message: String?, executable: InlineExecutable
     ) {
-        assertThrowsException(
-            IllegalArgumentException::class.java,
+        assertThrowsException<IllegalArgumentException>(
             message,
             executable
         )
@@ -46,27 +46,28 @@ object TestUtils {
     fun <T : Throwable> assertThrowsISE(
         message: String?, executable: InlineExecutable
     ) {
-        assertThrowsException(IllegalStateException::class.java, message, executable)
+        assertThrowsException<IllegalStateException>(message, executable)
     }
 
 
     inline fun <reified T : Throwable> assertThrowsException(
-        expectedType: Class<T>, message: String?, executable: InlineExecutable
+        message: String?, executable: InlineExecutable
     ) {
         // Assert the 'executable' throw an exception.
-        val ex = assertThrows<T> { executable.execute() }
+
+        val ex = assertFailsWith(T::class, {executable.execute()})
 
         // Ensure the exception is not null.
-        Assertions.assertNotNull(ex)
+        assertNotNull(ex)
 
         // Ensure the message matches the expected one.
         if (message != null) {
-            Assertions.assertEquals(message, ex!!.message)
+            assertEquals(message, ex.message)
         }
     }
 }
 
 fun interface InlineExecutable {
-    @Throws()
+    @Throws(Throwable::class)
     fun execute()
 }
