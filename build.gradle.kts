@@ -41,7 +41,7 @@ kotlin {
             implementation("com.fleeksoft.io:io:0.0.8")
         }
         commonTest.dependencies {
-
+            implementation(kotlin("test-common"))
         }
         jvmMain.dependencies {
 
