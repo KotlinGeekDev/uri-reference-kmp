@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import org.junit.jupiter.api.Test;
-
-
-public class SegmentValidatorTest
-{
+class SegmentValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new SegmentValidator().validate("abcde12345-._~", UTF_8);
-        new SegmentValidator().validate("()+_", UTF_8);
-        new SegmentValidator().validate("!$&'()*+,;=", UTF_8);
-        new SegmentValidator().validate("@", UTF_8);
-        new SegmentValidator().validate("", UTF_8);
-        new SegmentValidator().validate(null, UTF_8);
+    fun test_validate() {
+        SegmentValidator().validate("abcde12345-._~", StandardCharsets.UTF_8)
+        SegmentValidator().validate("()+_", StandardCharsets.UTF_8)
+        SegmentValidator().validate("!$&'()*+,;=", StandardCharsets.UTF_8)
+        SegmentValidator().validate("@", StandardCharsets.UTF_8)
+        SegmentValidator().validate("", StandardCharsets.UTF_8)
+        SegmentValidator().validate(null, StandardCharsets.UTF_8)
     }
 }

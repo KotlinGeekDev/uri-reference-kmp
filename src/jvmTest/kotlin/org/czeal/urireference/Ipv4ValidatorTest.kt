@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
 
 
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.junit.jupiter.api.Test;
-
-
-public class Ipv4ValidatorTest
-{
+class Ipv4ValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new Ipv4AddressValidator().validate("192.168.1.1");
-        new Ipv4AddressValidator().validate("8.8.8.8");
+    fun test_validate() {
+        Ipv4AddressValidator().validate("192.168.1.1")
+        Ipv4AddressValidator().validate("8.8.8.8")
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"256.100.0.1\" is invalid as an IPv4 address because the octet \"256\" has an invalid character \"6\" at the index 2.",
-            () -> new Ipv4AddressValidator().validate("256.100.0.1"));
+            { Ipv4AddressValidator().validate("256.100.0.1") })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"192.168.1\" is invalid as an IPv4 address because the number of octets contained in the host is invalid.",
-            () -> new Ipv4AddressValidator().validate("192.168.1"));
+            { Ipv4AddressValidator().validate("192.168.1") })
     }
 }

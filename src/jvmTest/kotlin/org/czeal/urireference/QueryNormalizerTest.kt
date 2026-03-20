@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.czeal.urireference.QueryNormalizer;
-import org.junit.jupiter.api.Test;
-
-
-public class QueryNormalizerTest
-{
+class QueryNormalizerTest {
     @Test
-    public void test_normalize()
-    {
-        assertEquals("k1=v1&k2=v2", new QueryNormalizer().normalize("k1=v1&k2=v2", UTF_8));
-        assertEquals("K1=V1&K2=V2", new QueryNormalizer().normalize("K1=V1&K2=V2", UTF_8));
-        assertEquals("", new QueryNormalizer().normalize("", UTF_8));
-        assertEquals((String)null, new QueryNormalizer().normalize(null, UTF_8));
+    fun test_normalize() {
+        Assertions.assertEquals("k1=v1&k2=v2", QueryNormalizer().normalize("k1=v1&k2=v2", StandardCharsets.UTF_8))
+        Assertions.assertEquals("K1=V1&K2=V2", QueryNormalizer().normalize("K1=V1&K2=V2", StandardCharsets.UTF_8))
+        Assertions.assertEquals("", QueryNormalizer().normalize("", StandardCharsets.UTF_8))
+        Assertions.assertEquals(null as String?, QueryNormalizer().normalize(null, StandardCharsets.UTF_8))
     }
 }

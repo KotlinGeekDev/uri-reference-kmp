@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsNPE
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 
-import static org.czeal.urireference.TestUtils.assertThrowsNPE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class SchemeNormalizerTest
-{
+class SchemeNormalizerTest {
     @Test
-    public void test_normalize()
-    {
-        assertEquals("http", new SchemeNormalizer().normalize("hTTp"));
-        assertThrowsNPE(() -> new SchemeNormalizer().normalize(null));
+    fun test_normalize() {
+        Assertions.assertEquals("http", SchemeNormalizer().normalize("hTTp"))
+        assertThrowsNPE<Throwable>({ SchemeNormalizer().normalize(null) })
     }
 }

@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.PercentEncoder.Companion.encode
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class PercentEncoderTest
-{
+class PercentEncoderTest {
     @Test
-    public void test_encode()
-    {
-        assertEquals("aA%3F", PercentEncoder.encode("aA?", UTF_8));
-        assertEquals("abcD123~%E3%82%A2", PercentEncoder.encode("abcD123~ア", UTF_8));
+    fun test_encode() {
+        Assertions.assertEquals("aA%3F", encode("aA?", StandardCharsets.UTF_8))
+        Assertions.assertEquals("abcD123~%E3%82%A2", encode("abcD123~ア", StandardCharsets.UTF_8))
     }
 }
