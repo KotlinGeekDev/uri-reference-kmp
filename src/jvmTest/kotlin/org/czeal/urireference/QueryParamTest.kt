@@ -19,7 +19,6 @@ import org.czeal.urireference.QueryParam.Companion.parse
 import org.czeal.urireference.TestUtils.assertThrowsNPE
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.function.ThrowingSupplier
 
 
 class QueryParamTest {

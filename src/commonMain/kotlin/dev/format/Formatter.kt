@@ -63,7 +63,7 @@ class Formatter {
     ): Any? {
         val lst = args[0] as Array<Any>
 
-        if (index == FormatToken.Companion.LAST_ARGUMENT_INDEX && !hasLastArgumentSet) {
+        if (index == FormatToken.LAST_ARGUMENT_INDEX && !hasLastArgumentSet) {
             throw Exception("<") //$NON-NLS-1$
         }
         if (null == lst) {
@@ -72,7 +72,7 @@ class Formatter {
         if (index >= lst.size) {
             throw Exception(token.plainText)
         }
-        return if (index == FormatToken.Companion.LAST_ARGUMENT_INDEX) {
+        return if (index == FormatToken.LAST_ARGUMENT_INDEX) {
             lastArgument
         } else lst[index]
     }

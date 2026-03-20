@@ -198,7 +198,7 @@ class URIReference private constructor(res: ProcessResult) : Comparable<URIRefer
         this.isRelativeReference = res.relativeReference
         this.scheme = res.scheme
         this.authority = res.authority
-        this.path = res.path.toString()
+        this.path = res.path
         this.query = res.query
         this.fragment = res.fragment
     }
