@@ -40,6 +40,9 @@ class Transformer internal constructor(private val formatter: Formatter) {
             '%' -> {
                 transformFromPercent()
             }
+            'c', 'C' -> {
+                transformFromChar()
+            }
             else -> {
                 throw Exception(
                     token.conversionType.toString()
@@ -77,6 +80,40 @@ class Transformer internal constructor(private val formatter: Formatter) {
             )
         }
         result.append(arg)
+        return padding(result, startIndex)
+    }
+
+    /*
+     * Transforms the Char to a formatted String.
+     */
+    private fun transformFromChar(): String {
+        val result = StringBuilder()
+        val startIndex = 0
+        val flags = formatToken!!.flags
+        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS)
+            && !formatToken!!.isWidthSet
+        ) {
+            throw Exception(
+                "-" //$NON-NLS-1$
+                        + formatToken!!.conversionType
+            )
+        }
+        // only '-' is valid for flags if the argument is not an
+// instance of Formattable
+        if (FormatToken.FLAGS_UNSET != flags
+            && FormatToken.FLAG_MINUS != flags
+        ) {
+            throw Exception(
+            )
+        }
+        val charValue: String = if (arg is Char) {
+            (arg as Char).toString()
+        } else if (arg is String) {
+            (arg as String)
+        } else {
+            error("$arg is not a valid character.")
+        }
+        result.append(charValue)
         return padding(result, startIndex)
     }
 
@@ -175,7 +212,7 @@ class Transformer internal constructor(private val formatter: Formatter) {
             )
         }
         value = if (arg is Long) {
-            (arg as Long).toLong()
+            (arg as Long)
         } else if (arg is Int) {
             (arg as Int).toLong()
         } else if (arg is Short) {
