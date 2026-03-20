@@ -13,78 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.czeal.urireference.PathValidator;
-import org.junit.jupiter.api.Test;
-
-
-public class PathValidatorTest
-{
+class PathValidatorTest {
     @Test
-    public void test_validate()
-    {
+    fun test_validate() {
         //
         // relativeReference = true, hasAuthority = true
         //
-        new PathValidator().validate("/segment", UTF_8, true, true);
-        new PathValidator().validate("/segment/", UTF_8, true, true);
-        new PathValidator().validate("/segment1/segment2", UTF_8, true, true);
-        new PathValidator().validate("/", UTF_8, true, true);
-        new PathValidator().validate("//", UTF_8, true, true);
-        new PathValidator().validate("", UTF_8, true, true);
-        new PathValidator().validate(null, UTF_8, true, true);
+        PathValidator().validate("/segment", StandardCharsets.UTF_8, true, true)
+        PathValidator().validate("/segment/", StandardCharsets.UTF_8, true, true)
+        PathValidator().validate("/segment1/segment2", StandardCharsets.UTF_8, true, true)
+        PathValidator().validate("/", StandardCharsets.UTF_8, true, true)
+        PathValidator().validate("//", StandardCharsets.UTF_8, true, true)
+        PathValidator().validate("", StandardCharsets.UTF_8, true, true)
+        PathValidator().validate(null, StandardCharsets.UTF_8, true, true)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The path value is invalid.",
-            () -> new PathValidator().validate("segment", UTF_8, true, true));
+            { PathValidator().validate("segment", StandardCharsets.UTF_8, true, true) })
 
         //
         // relativeReference = false, hasAuthority = false
         //
-        new PathValidator().validate("/segment", UTF_8, true, false);
-        new PathValidator().validate("/segment/", UTF_8, true, false);
-        new PathValidator().validate("/segment1/segment2", UTF_8, true, false);
-        new PathValidator().validate("/", UTF_8, true, false);
-        new PathValidator().validate("segment", UTF_8, true, false);
-        new PathValidator().validate("", UTF_8, true, false);
-        new PathValidator().validate(null, UTF_8, true, false);
+        PathValidator().validate("/segment", StandardCharsets.UTF_8, true, false)
+        PathValidator().validate("/segment/", StandardCharsets.UTF_8, true, false)
+        PathValidator().validate("/segment1/segment2", StandardCharsets.UTF_8, true, false)
+        PathValidator().validate("/", StandardCharsets.UTF_8, true, false)
+        PathValidator().validate("segment", StandardCharsets.UTF_8, true, false)
+        PathValidator().validate("", StandardCharsets.UTF_8, true, false)
+        PathValidator().validate(null, StandardCharsets.UTF_8, true, false)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The path value is invalid.",
-            () -> new PathValidator().validate("//", UTF_8, true, false));
+            { PathValidator().validate("//", StandardCharsets.UTF_8, true, false) })
 
         //
         // relativeReference = false, hasAuthority = true
         //
-        new PathValidator().validate("/segment", UTF_8, false, true);
-        new PathValidator().validate("/segment/", UTF_8, false, true);
-        new PathValidator().validate("/segment1/segment2", UTF_8, false, true);
-        new PathValidator().validate("/", UTF_8, false, true);
-        new PathValidator().validate("//", UTF_8, false, true);
-        new PathValidator().validate("", UTF_8, false, true);
-        new PathValidator().validate(null, UTF_8, false, true);
+        PathValidator().validate("/segment", StandardCharsets.UTF_8, false, true)
+        PathValidator().validate("/segment/", StandardCharsets.UTF_8, false, true)
+        PathValidator().validate("/segment1/segment2", StandardCharsets.UTF_8, false, true)
+        PathValidator().validate("/", StandardCharsets.UTF_8, false, true)
+        PathValidator().validate("//", StandardCharsets.UTF_8, false, true)
+        PathValidator().validate("", StandardCharsets.UTF_8, false, true)
+        PathValidator().validate(null, StandardCharsets.UTF_8, false, true)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The path value is invalid.",
-            () -> new PathValidator().validate("segment", UTF_8, false, true));
+            { PathValidator().validate("segment", StandardCharsets.UTF_8, false, true) })
 
         //
         // relativeReference = false, hasAuthority = false
         //
-        new PathValidator().validate("/segment", UTF_8, false, false);
-        new PathValidator().validate("/segment/", UTF_8, false, false);
-        new PathValidator().validate("/segment1/segment2", UTF_8, false, false);
-        new PathValidator().validate("/", UTF_8, false, false);
-        new PathValidator().validate("segment", UTF_8, false, false);
-        new PathValidator().validate("", UTF_8, false, false);
-        new PathValidator().validate(null, UTF_8, false, false);
+        PathValidator().validate("/segment", StandardCharsets.UTF_8, false, false)
+        PathValidator().validate("/segment/", StandardCharsets.UTF_8, false, false)
+        PathValidator().validate("/segment1/segment2", StandardCharsets.UTF_8, false, false)
+        PathValidator().validate("/", StandardCharsets.UTF_8, false, false)
+        PathValidator().validate("segment", StandardCharsets.UTF_8, false, false)
+        PathValidator().validate("", StandardCharsets.UTF_8, false, false)
+        PathValidator().validate(null, StandardCharsets.UTF_8, false, false)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The path value is invalid.",
-            () -> new PathValidator().validate("//", UTF_8, false, false));
+            { PathValidator().validate("//", StandardCharsets.UTF_8, false, false) })
     }
 }

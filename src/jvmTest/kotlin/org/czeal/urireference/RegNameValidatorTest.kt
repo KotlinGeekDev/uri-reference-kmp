@@ -13,46 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.junit.jupiter.api.Test;
-
-
-public class RegNameValidatorTest
-{
+class RegNameValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new RegNameValidator().validate("example.com", UTF_8);
-        new RegNameValidator().validate("a_example.com", UTF_8);
-        new RegNameValidator().validate("a-example.com", UTF_8);
-        new RegNameValidator().validate("%20example.com", UTF_8);
+    fun test_validate() {
+        RegNameValidator().validate("example.com", StandardCharsets.UTF_8)
+        RegNameValidator().validate("a_example.com", StandardCharsets.UTF_8)
+        RegNameValidator().validate("a-example.com", StandardCharsets.UTF_8)
+        RegNameValidator().validate("%20example.com", StandardCharsets.UTF_8)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"%XXexample.com\" has an invalid hex digit \"X\" at the index 1.",
-            () -> new RegNameValidator().validate("%XXexample.com", UTF_8));
+            { RegNameValidator().validate("%XXexample.com", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"a@example.com\" has an invalid character \"@\" at the index 1.",
-            () -> new RegNameValidator().validate("a@example.com", UTF_8));
+            { RegNameValidator().validate("a@example.com", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"example.com/a\" has an invalid character \"/\" at the index 11.",
-            () -> new RegNameValidator().validate("example.com/a", UTF_8));
+            { RegNameValidator().validate("example.com/a", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"example.com?a\" has an invalid character \"?\" at the index 11.",
-            () -> new RegNameValidator().validate("example.com?a", UTF_8));
+            { RegNameValidator().validate("example.com?a", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"example.com:a\" has an invalid character \":\" at the index 11.",
-            () -> new RegNameValidator().validate("example.com:a", UTF_8));
+            { RegNameValidator().validate("example.com:a", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"例子.测试\" has an invalid character \"例\" at the index 0.",
-            () -> new RegNameValidator().validate("例子.测试", UTF_8));
+            { RegNameValidator().validate("例子.测试", StandardCharsets.UTF_8) })
     }
 }

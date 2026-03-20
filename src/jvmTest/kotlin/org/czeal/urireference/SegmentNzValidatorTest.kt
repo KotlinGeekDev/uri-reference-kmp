@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.czeal.urireference.TestUtils.assertThrowsNPE
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import static org.czeal.urireference.TestUtils.assertThrowsNPE;
-import org.czeal.urireference.SegmentNzValidator;
-import org.junit.jupiter.api.Test;
-
-
-public class SegmentNzValidatorTest
-{
+class SegmentNzValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new SegmentNzValidator().validate("abcde12345-._~", UTF_8);
-        new SegmentNzValidator().validate("()+_", UTF_8);
-        new SegmentNzValidator().validate("!$&'()*+,;=", UTF_8);
-        new SegmentNzValidator().validate("@", UTF_8);
+    fun test_validate() {
+        SegmentNzValidator().validate("abcde12345-._~", StandardCharsets.UTF_8)
+        SegmentNzValidator().validate("()+_", StandardCharsets.UTF_8)
+        SegmentNzValidator().validate("!$&'()*+,;=", StandardCharsets.UTF_8)
+        SegmentNzValidator().validate("@", StandardCharsets.UTF_8)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The path segment value must not be empty.",
-            () -> new SegmentNzValidator().validate("", UTF_8));
+            { SegmentNzValidator().validate("", StandardCharsets.UTF_8) })
 
-        assertThrowsNPE(
+        assertThrowsNPE<Throwable>(
             "The path segment value must not be null.",
-            () -> new SegmentNzValidator().validate(null, UTF_8));
+            { SegmentNzValidator().validate(null, StandardCharsets.UTF_8) })
     }
 }

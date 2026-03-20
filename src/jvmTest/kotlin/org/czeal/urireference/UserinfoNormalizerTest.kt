@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class UserinfoNormalizerTest
-{
+class UserinfoNormalizerTest {
     @Test
-    public void test_normalize()
-    {
-        assertEquals("userINFO", new UserinfoNormalizer().normalize("userINFO", UTF_8));
-        assertEquals("userinfo", new UserinfoNormalizer().normalize("userinf%6F", UTF_8));
-        assertEquals("", new UserinfoNormalizer().normalize("", UTF_8));
-        assertEquals(null, new UserinfoNormalizer().normalize(null, UTF_8));
+    fun test_normalize() {
+        Assertions.assertEquals("userINFO", UserinfoNormalizer().normalize("userINFO", StandardCharsets.UTF_8))
+        Assertions.assertEquals("userinfo", UserinfoNormalizer().normalize("userinf%6F", StandardCharsets.UTF_8))
+        Assertions.assertEquals("", UserinfoNormalizer().normalize("", StandardCharsets.UTF_8))
+        Assertions.assertEquals(null, UserinfoNormalizer().normalize(null, StandardCharsets.UTF_8))
     }
 }

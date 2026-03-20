@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.czeal.urireference.QueryValidator;
-import org.junit.jupiter.api.Test;
-
-
-public class QueryValidatorTest
-{
+class QueryValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new QueryValidator().validate("k1=v1&k2=v2", UTF_8);
-        new QueryValidator().validate("", UTF_8);
-        new QueryValidator().validate(null, UTF_8);
+    fun test_validate() {
+        QueryValidator().validate("k1=v1&k2=v2", StandardCharsets.UTF_8)
+        QueryValidator().validate("", StandardCharsets.UTF_8)
+        QueryValidator().validate(null, StandardCharsets.UTF_8)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The query value \"[invalid_query]\" has an invalid character \"[\" at the index 0.",
-            () -> new QueryValidator().validate("[invalid_query]", UTF_8));
+            { QueryValidator().validate("[invalid_query]", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The percent symbol \"%\" at the index 6 in the query value \"k1=v1&%1\" is not followed by two characters.",
-            () -> new QueryValidator().validate("k1=v1&%1", UTF_8));
+            { QueryValidator().validate("k1=v1&%1", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "Failed to decode bytes represented by \"%FF\" in the query value \"k1=v1&%FF\".",
-            () -> new QueryValidator().validate("k1=v1&%FF", UTF_8));
+            { QueryValidator().validate("k1=v1&%FF", StandardCharsets.UTF_8) })
     }
 }

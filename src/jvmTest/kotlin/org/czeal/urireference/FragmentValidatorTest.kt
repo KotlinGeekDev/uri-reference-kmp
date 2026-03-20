@@ -13,39 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.junit.jupiter.api.Test;
-
-
-public class FragmentValidatorTest
-{
+class FragmentValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new FragmentValidator().validate("section1", UTF_8);
-        new FragmentValidator().validate("fig%20A", UTF_8);
-        new FragmentValidator().validate("2.3", UTF_8);
-        new FragmentValidator().validate("", UTF_8);
-        new FragmentValidator().validate(null, UTF_8);
+    fun test_validate() {
+        FragmentValidator().validate("section1", StandardCharsets.UTF_8)
+        FragmentValidator().validate("fig%20A", StandardCharsets.UTF_8)
+        FragmentValidator().validate("2.3", StandardCharsets.UTF_8)
+        FragmentValidator().validate("", StandardCharsets.UTF_8)
+        FragmentValidator().validate(null, StandardCharsets.UTF_8)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The fragment value \"#fragment\" has an invalid character \"#\" at the index 0.",
-            () -> new FragmentValidator().validate("#fragment", UTF_8));
+            { FragmentValidator().validate("#fragment", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The fragment value \" frag\" has an invalid character \" \" at the index 0.",
-            () -> new FragmentValidator().validate(" frag", UTF_8));
+            { FragmentValidator().validate(" frag", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The percent symbol \"%\" at the index 8 in the fragment value \"fragment%1\" is not followed by two characters.",
-            () -> new FragmentValidator().validate("fragment%1", UTF_8));
+            { FragmentValidator().validate("fragment%1", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The fragment value \"fragment%XX\" has an invalid hex digit \"X\" at the index 9.",
-            () -> new FragmentValidator().validate("fragment%XX", UTF_8));
+            { FragmentValidator().validate("fragment%XX", StandardCharsets.UTF_8) })
     }
 }

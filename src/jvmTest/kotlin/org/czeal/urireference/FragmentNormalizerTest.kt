@@ -17,13 +17,16 @@ package org.czeal.urireference
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-class PortNormalizerTest {
+class FragmentNormalizerTest {
     @Test
     fun test_normalize() {
-        Assertions.assertEquals(-1, PortNormalizer().normalize(80, "http"))
-        Assertions.assertEquals(80, PortNormalizer().normalize(80, "custom"))
-        Assertions.assertEquals(443, PortNormalizer().normalize(443, "https"))
+        Assertions.assertEquals("fragment", FragmentNormalizer().normalize("fragment", StandardCharsets.UTF_8))
+        Assertions.assertEquals("FRAGMENT", FragmentNormalizer().normalize("FRAGMENT", StandardCharsets.UTF_8))
+        Assertions.assertEquals("fragment", FragmentNormalizer().normalize("fragmen%74", StandardCharsets.UTF_8))
+        Assertions.assertEquals("", FragmentNormalizer().normalize("", StandardCharsets.UTF_8))
+        Assertions.assertEquals(null as String?, FragmentNormalizer().normalize(null, StandardCharsets.UTF_8))
     }
 }

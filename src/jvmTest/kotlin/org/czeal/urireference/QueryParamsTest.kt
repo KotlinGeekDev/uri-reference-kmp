@@ -13,63 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.QueryParams.Companion.parse
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.ThrowingSupplier
 
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.czeal.urireference.QueryParams;
-import org.junit.jupiter.api.Test;
-
-
-public class QueryParamsTest
-{
+class QueryParamsTest {
     @Test
-    public void test_parse()
-    {
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&"));
-        assertDoesNotThrow(() -> QueryParams.parse(""));
-        assertDoesNotThrow(() -> QueryParams.parse(null));
+    fun test_parse() {
+        Assertions.assertDoesNotThrow<QueryParams?>(ThrowingSupplier { parse("k1=v1&k2=v2") })
+        Assertions.assertDoesNotThrow<QueryParams?>(ThrowingSupplier { parse("k1=v1&k2") })
+        Assertions.assertDoesNotThrow<QueryParams?>(ThrowingSupplier { parse("k1=v1&k2") })
+        Assertions.assertDoesNotThrow<QueryParams?>(ThrowingSupplier { parse("k1=v1&") })
+        Assertions.assertDoesNotThrow<QueryParams?>(ThrowingSupplier { parse("") })
+        Assertions.assertDoesNotThrow<QueryParams?>(ThrowingSupplier { parse(null) })
     }
 
 
     @Test
-    public void test_add()
-    {
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").add("k3", "v3"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2").add("k3", null));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2").add("k3", ""));
+    fun test_add() {
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2=v2")!!.add("k3", "v3") })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2")!!.add("k3", null) })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2")!!.add("k3", "") })
     }
 
 
     @Test
-    public void test_replace()
-    {
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").replace("k2", "new-value"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").replace("k3", "v3"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2").replace("k2", "new-value"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").replace(null, "new-value"));
+    fun test_replace() {
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier {
+            parse("k1=v1&k2=v2")!!.replace(
+                "k2",
+                "new-value"
+            )
+        })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2=v2")!!.replace("k3", "v3") })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2")!!.replace("k2", "new-value") })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier {
+            parse("k1=v1&k2=v2")!!.replace(
+                null,
+                "new-value"
+            )
+        })
     }
 
 
     @Test
-    public void test_remove()
-    {
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").remove("k2"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2-1&k2=v2-2").remove("k2"));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").remove(""));
-        assertDoesNotThrow(() -> QueryParams.parse("k1=v1&k2=v2").remove(null));
+    fun test_remove() {
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2=v2")!!.remove("k2") })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2=v2-1&k2=v2-2")!!.remove("k2") })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2=v2")!!.remove("") })
+        Assertions.assertDoesNotThrow<QueryParams>(ThrowingSupplier { parse("k1=v1&k2=v2")!!.remove(null) })
     }
 
 
     @Test
-    public void test_toString()
-    {
-        assertEquals("k1=v1&k2=v2", QueryParams.parse("k1=v1&k2=v2").toString());
-        assertEquals("k1=v1&k2", QueryParams.parse("k1=v1&k2").toString());
-        assertEquals("k1=v1&", QueryParams.parse("k1=v1&").toString());
+    fun test_toString() {
+        Assertions.assertEquals("k1=v1&k2=v2", parse("k1=v1&k2=v2").toString())
+        Assertions.assertEquals("k1=v1&k2", parse("k1=v1&k2").toString())
+        Assertions.assertEquals("k1=v1&", parse("k1=v1&").toString())
     }
 }

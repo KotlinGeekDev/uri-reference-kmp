@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class PathNormalizerTest
-{
+class PathNormalizerTest {
     @Test
-    public void test_validate()
-    {
-        assertEquals("/", new PathNormalizer().normalize("", UTF_8, true));
-        assertEquals("", new PathNormalizer().normalize("", UTF_8, false));
-        assertEquals("/b", new PathNormalizer().normalize("/a/../b", UTF_8, true));
-        assertEquals("/b", new PathNormalizer().normalize("/a/../../b", UTF_8, true));
-        assertEquals("b", new PathNormalizer().normalize("../b", UTF_8, true));
-        assertEquals("/a/b/c", new PathNormalizer().normalize("/a/b/c", UTF_8, true));
+    fun test_validate() {
+        Assertions.assertEquals("/", PathNormalizer().normalize("", StandardCharsets.UTF_8, true))
+        Assertions.assertEquals("", PathNormalizer().normalize("", StandardCharsets.UTF_8, false))
+        Assertions.assertEquals("/b", PathNormalizer().normalize("/a/../b", StandardCharsets.UTF_8, true))
+        Assertions.assertEquals("/b", PathNormalizer().normalize("/a/../../b", StandardCharsets.UTF_8, true))
+        Assertions.assertEquals("b", PathNormalizer().normalize("../b", StandardCharsets.UTF_8, true))
+        Assertions.assertEquals("/a/b/c", PathNormalizer().normalize("/a/b/c", StandardCharsets.UTF_8, true))
     }
 }

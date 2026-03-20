@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
 
 
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.junit.jupiter.api.Test;
-
-
-public class Ipv6ValidatorTest
-{
+class Ipv6ValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new Ipv6AddressValidator().validate("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
-        new Ipv6AddressValidator().validate("::1");
+    fun test_validate() {
+        Ipv6AddressValidator().validate("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+        Ipv6AddressValidator().validate("::1")
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"[2001:db8::85a3::7334]\" is invalid because the content enclosed by brackets does not form a valid IPv6 address due to an empty segment.",
-            () -> new Ipv6AddressValidator().validate("2001:db8::85a3::7334"));
+            { Ipv6AddressValidator().validate("2001:db8::85a3::7334") })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"[GGGG:FFFF:0000:0000:0000:0000:0000:0000]\" is invalid because the content enclosed by brackets does not form a valid IPv6 address due to the segment \"GGGG\", containing an invalid character \"G\" at the index 0.",
-            () -> new Ipv6AddressValidator().validate("GGGG:FFFF:0000:0000:0000:0000:0000:0000"));
+            { Ipv6AddressValidator().validate("GGGG:FFFF:0000:0000:0000:0000:0000:0000") })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"[0000:0000:0000:0000:0000:0000:0000:0000:0000:0000]\" is invalid because the content enclosed by brackets does not form a valid IPv6 address due to an incorrect number of segments.",
-            () -> new Ipv6AddressValidator().validate("0000:0000:0000:0000:0000:0000:0000:0000:0000:0000"));
+            { Ipv6AddressValidator().validate("0000:0000:0000:0000:0000:0000:0000:0000:0000:0000") })
     }
 }

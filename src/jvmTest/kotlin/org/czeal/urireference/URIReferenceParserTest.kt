@@ -13,462 +13,485 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.HostType.IPV6;
-import static org.czeal.urireference.HostType.IPVFUTURE;
-import static org.czeal.urireference.HostType.REGNAME;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class URIReferenceParserTest
-{
+class URIReferenceParserTest {
     @Test
-    public void test_parse()
-    {
-        URIReference uriRef1 = new URIReferenceParser().parse("http://example.com", UTF_8);
-        assertEquals("http://example.com", uriRef1.toString());
-        assertEquals(false, uriRef1.isRelativeReference());
-        assertEquals("http", uriRef1.getScheme());
-        assertEquals(true, uriRef1.hasAuthority());
-        assertEquals("example.com", uriRef1.getAuthority().toString());
-        assertEquals(null, uriRef1.getUserinfo());
-        assertEquals("example.com", uriRef1.getHost().toString());
-        assertEquals("example.com", uriRef1.getHost().getValue());
-        assertEquals(REGNAME, uriRef1.getHost().getType());
-        assertEquals(-1, uriRef1.getPort());
-        assertEquals("", uriRef1.getPath());
-        assertEquals(null, uriRef1.getQuery());
-        assertEquals(null, uriRef1.getFragment());
+    fun test_parse() {
+        val uriRef1 = URIReferenceParser().parse("http://example.com", StandardCharsets.UTF_8)
+        Assertions.assertEquals("http://example.com", uriRef1.toString())
+        Assertions.assertEquals(false, uriRef1.isRelativeReference)
+        Assertions.assertEquals("http", uriRef1.scheme)
+        Assertions.assertEquals(true, uriRef1.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef1.authority.toString())
+        Assertions.assertEquals(null, uriRef1.userinfo)
+        Assertions.assertEquals("example.com", uriRef1.host.toString())
+        Assertions.assertEquals("example.com", uriRef1.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef1.host!!.type)
+        Assertions.assertEquals(-1, uriRef1.port)
+        Assertions.assertEquals("", uriRef1.path)
+        Assertions.assertEquals(null, uriRef1.query)
+        Assertions.assertEquals(null, uriRef1.fragment)
 
-        URIReference uriRef2 = new URIReferenceParser().parse("hTTp://example.com", UTF_8);;
-        assertEquals("hTTp://example.com", uriRef2.toString());
-        assertEquals(false, uriRef2.isRelativeReference());
-        assertEquals("hTTp", uriRef2.getScheme());
-        assertEquals(true, uriRef2.hasAuthority());
-        assertEquals("example.com", uriRef2.getAuthority().toString());
-        assertEquals(null, uriRef2.getUserinfo());
-        assertEquals("example.com", uriRef2.getHost().toString());
-        assertEquals("example.com", uriRef2.getHost().getValue());
-        assertEquals(REGNAME, uriRef2.getHost().getType());
-        assertEquals(-1, uriRef2.getPort());
-        assertEquals("", uriRef2.getPath());
-        assertEquals(null, uriRef2.getQuery());
-        assertEquals(null, uriRef2.getFragment());
+        val uriRef2 = URIReferenceParser().parse("hTTp://example.com", StandardCharsets.UTF_8)
 
-        URIReference uriRef3 = new URIReferenceParser().parse("//example.com", UTF_8);;
-        assertEquals("//example.com", uriRef3.toString());
-        assertEquals(true, uriRef3.isRelativeReference());
-        assertEquals(null, uriRef3.getScheme());
-        assertEquals(true, uriRef3.hasAuthority());
-        assertEquals("example.com", uriRef3.getAuthority().toString());
-        assertEquals(null, uriRef3.getUserinfo());
-        assertEquals("example.com", uriRef3.getHost().toString());
-        assertEquals("example.com", uriRef3.getHost().getValue());
-        assertEquals(REGNAME, uriRef3.getHost().getType());
-        assertEquals(-1, uriRef3.getPort());
-        assertEquals("", uriRef3.getPath());
-        assertEquals(null, uriRef3.getQuery());
-        assertEquals(null, uriRef3.getFragment());
+        Assertions.assertEquals("hTTp://example.com", uriRef2.toString())
+        Assertions.assertEquals(false, uriRef2.isRelativeReference)
+        Assertions.assertEquals("hTTp", uriRef2.scheme)
+        Assertions.assertEquals(true, uriRef2.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef2.authority.toString())
+        Assertions.assertEquals(null, uriRef2.userinfo)
+        Assertions.assertEquals("example.com", uriRef2.host.toString())
+        Assertions.assertEquals("example.com", uriRef2.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef2.host!!.type)
+        Assertions.assertEquals(-1, uriRef2.port)
+        Assertions.assertEquals("", uriRef2.path)
+        Assertions.assertEquals(null, uriRef2.query)
+        Assertions.assertEquals(null, uriRef2.fragment)
 
-        URIReference uriRef4 = new URIReferenceParser().parse("http:", UTF_8);;
-        assertEquals(false, uriRef4.isRelativeReference());
-        assertEquals("http", uriRef4.getScheme());
-        assertEquals(false, uriRef4.hasAuthority());
-        assertEquals(null, uriRef4.getAuthority());
-        assertEquals(null, uriRef4.getUserinfo());
-        assertEquals(null, uriRef4.getHost());
-        assertEquals(-1, uriRef4.getPort());
-        assertEquals("", uriRef4.getPath());
-        assertEquals(null, uriRef4.getQuery());
-        assertEquals(null, uriRef4.getFragment());
+        val uriRef3 = URIReferenceParser().parse("//example.com", StandardCharsets.UTF_8)
 
-        URIReference uriRef5 = new URIReferenceParser().parse("http://john@example.com", UTF_8);;
-        assertEquals("http://john@example.com", uriRef5.toString());
-        assertEquals(false, uriRef5.isRelativeReference());
-        assertEquals("http", uriRef5.getScheme());
-        assertEquals(true, uriRef5.hasAuthority());
-        assertEquals("john@example.com", uriRef5.getAuthority().toString());
-        assertEquals("john", uriRef5.getUserinfo());
-        assertEquals("example.com", uriRef5.getHost().toString());
-        assertEquals("example.com", uriRef5.getHost().getValue());
-        assertEquals(REGNAME, uriRef5.getHost().getType());
-        assertEquals(-1, uriRef5.getPort());
-        assertEquals("", uriRef5.getPath());
-        assertEquals(null, uriRef5.getQuery());
-        assertEquals(null, uriRef5.getFragment());
+        Assertions.assertEquals("//example.com", uriRef3.toString())
+        Assertions.assertEquals(true, uriRef3.isRelativeReference)
+        Assertions.assertEquals(null, uriRef3.scheme)
+        Assertions.assertEquals(true, uriRef3.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef3.authority.toString())
+        Assertions.assertEquals(null, uriRef3.userinfo)
+        Assertions.assertEquals("example.com", uriRef3.host.toString())
+        Assertions.assertEquals("example.com", uriRef3.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef3.host!!.type)
+        Assertions.assertEquals(-1, uriRef3.port)
+        Assertions.assertEquals("", uriRef3.path)
+        Assertions.assertEquals(null, uriRef3.query)
+        Assertions.assertEquals(null, uriRef3.fragment)
 
-        URIReference uriRef6 = new URIReferenceParser().parse("http://%6A%6F%68%6E@example.com", UTF_8);;
-        assertEquals("http://%6A%6F%68%6E@example.com", uriRef6.toString());
-        assertEquals(false, uriRef6.isRelativeReference());
-        assertEquals("http", uriRef6.getScheme());
-        assertEquals(true, uriRef6.hasAuthority());
-        assertEquals("%6A%6F%68%6E@example.com", uriRef6.getAuthority().toString());
-        assertEquals("%6A%6F%68%6E", uriRef6.getUserinfo());
-        assertEquals("example.com", uriRef6.getHost().toString());
-        assertEquals("example.com", uriRef6.getHost().getValue());
-        assertEquals(REGNAME, uriRef6.getHost().getType());
-        assertEquals(-1, uriRef6.getPort());
-        assertEquals("", uriRef6.getPath());
-        assertEquals(null, uriRef6.getQuery());
-        assertEquals(null, uriRef6.getFragment());
+        val uriRef4 = URIReferenceParser().parse("http:", StandardCharsets.UTF_8)
 
-        URIReference uriRef7 = new URIReferenceParser().parse("http://101.102.103.104", UTF_8);;
-        assertEquals("http://101.102.103.104", uriRef7.toString());
-        assertEquals(false, uriRef7.isRelativeReference());
-        assertEquals("http", uriRef7.getScheme());
-        assertEquals(true, uriRef7.hasAuthority());
-        assertEquals("101.102.103.104", uriRef7.getAuthority().toString());
-        assertEquals(null, uriRef7.getUserinfo());
-        assertEquals("101.102.103.104", uriRef7.getHost().toString());
-        assertEquals("101.102.103.104", uriRef7.getHost().getValue());
-        assertEquals(HostType.IPV4, uriRef7.getHost().getType());
-        assertEquals(-1, uriRef7.getPort());
-        assertEquals("", uriRef7.getPath());
-        assertEquals(null, uriRef7.getQuery());
-        assertEquals(null, uriRef7.getFragment());
+        Assertions.assertEquals(false, uriRef4.isRelativeReference)
+        Assertions.assertEquals("http", uriRef4.scheme)
+        Assertions.assertEquals(false, uriRef4.hasAuthority())
+        Assertions.assertEquals(null, uriRef4.authority)
+        Assertions.assertEquals(null, uriRef4.userinfo)
+        Assertions.assertEquals(null, uriRef4.host)
+        Assertions.assertEquals(-1, uriRef4.port)
+        Assertions.assertEquals("", uriRef4.path)
+        Assertions.assertEquals(null, uriRef4.query)
+        Assertions.assertEquals(null, uriRef4.fragment)
 
-        URIReference uriRef8 = new URIReferenceParser().parse("http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", UTF_8);;
-        assertEquals("http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.toString());
-        assertEquals(false, uriRef8.isRelativeReference());
-        assertEquals("http", uriRef8.getScheme());
-        assertEquals(true, uriRef8.hasAuthority());
-        assertEquals("[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.getAuthority().toString());
-        assertEquals(null, uriRef8.getAuthority().getUserinfo());
-        assertEquals("[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.getHost().toString());
-        assertEquals("[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.getHost().getValue());
-        assertEquals(IPV6, uriRef8.getHost().getType());
-        assertEquals(-1, uriRef8.getPort());
-        assertEquals("", uriRef8.getPath());
-        assertEquals(null, uriRef8.getQuery());
-        assertEquals(null, uriRef8.getFragment());
+        val uriRef5 = URIReferenceParser().parse("http://john@example.com", StandardCharsets.UTF_8)
 
-        URIReference uriRef9 = new URIReferenceParser().parse("http://[2001:db8:0:1:1:1:1:1]", UTF_8);;
-        assertEquals("http://[2001:db8:0:1:1:1:1:1]", uriRef9.toString());
-        assertEquals(false, uriRef9.isRelativeReference());
-        assertEquals("http", uriRef9.getScheme());
-        assertEquals(true, uriRef9.hasAuthority());
-        assertEquals("[2001:db8:0:1:1:1:1:1]", uriRef9.getAuthority().toString());
-        assertEquals(null, uriRef9.getUserinfo());
-        assertEquals("[2001:db8:0:1:1:1:1:1]", uriRef9.getHost().toString());
-        assertEquals("[2001:db8:0:1:1:1:1:1]", uriRef9.getHost().getValue());
-        assertEquals(IPV6, uriRef9.getHost().getType());
-        assertEquals(-1, uriRef9.getPort());
-        assertEquals("", uriRef9.getPath());
-        assertEquals(null, uriRef9.getQuery());
-        assertEquals(null, uriRef9.getFragment());
+        Assertions.assertEquals("http://john@example.com", uriRef5.toString())
+        Assertions.assertEquals(false, uriRef5.isRelativeReference)
+        Assertions.assertEquals("http", uriRef5.scheme)
+        Assertions.assertEquals(true, uriRef5.hasAuthority())
+        Assertions.assertEquals("john@example.com", uriRef5.authority.toString())
+        Assertions.assertEquals("john", uriRef5.userinfo)
+        Assertions.assertEquals("example.com", uriRef5.host.toString())
+        Assertions.assertEquals("example.com", uriRef5.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef5.host!!.type)
+        Assertions.assertEquals(-1, uriRef5.port)
+        Assertions.assertEquals("", uriRef5.path)
+        Assertions.assertEquals(null, uriRef5.query)
+        Assertions.assertEquals(null, uriRef5.fragment)
 
-        URIReference uriRef10 = new URIReferenceParser().parse("http://[2001:0:9d38:6abd:0:0:0:42]", UTF_8);;
-        assertEquals("http://[2001:0:9d38:6abd:0:0:0:42]", uriRef10.toString());
-        assertEquals(false, uriRef10.isRelativeReference());
-        assertEquals("http", uriRef10.getScheme());
-        assertEquals(true, uriRef10.hasAuthority());
-        assertEquals("[2001:0:9d38:6abd:0:0:0:42]", uriRef10.getAuthority().toString());
-        assertEquals(null, uriRef10.getUserinfo());
-        assertEquals("[2001:0:9d38:6abd:0:0:0:42]", uriRef10.getHost().toString());
-        assertEquals("[2001:0:9d38:6abd:0:0:0:42]", uriRef10.getHost().getValue());
-        assertEquals(IPV6, uriRef10.getHost().getType());
-        assertEquals(-1, uriRef10.getPort());
-        assertEquals("", uriRef10.getPath());
-        assertEquals(null, uriRef10.getQuery());
-        assertEquals(null, uriRef10.getFragment());
+        val uriRef6 = URIReferenceParser().parse("http://%6A%6F%68%6E@example.com", StandardCharsets.UTF_8)
 
-        URIReference uriRef11 = new URIReferenceParser().parse("http://[fe80::1]", UTF_8);;
-        assertEquals("http://[fe80::1]", uriRef11.toString());
-        assertEquals(false, uriRef11.isRelativeReference());
-        assertEquals("http", uriRef11.getScheme());
-        assertEquals(true, uriRef11.hasAuthority());
-        assertEquals("[fe80::1]", uriRef11.getAuthority().toString());
-        assertEquals(null, uriRef11.getUserinfo());
-        assertEquals("[fe80::1]", uriRef11.getHost().toString());
-        assertEquals("[fe80::1]", uriRef11.getHost().getValue());
-        assertEquals(IPV6, uriRef11.getHost().getType());
-        assertEquals(-1, uriRef11.getPort());
-        assertEquals("", uriRef11.getPath());
-        assertEquals(null, uriRef11.getQuery());
-        assertEquals(null, uriRef11.getFragment());
+        Assertions.assertEquals("http://%6A%6F%68%6E@example.com", uriRef6.toString())
+        Assertions.assertEquals(false, uriRef6.isRelativeReference)
+        Assertions.assertEquals("http", uriRef6.scheme)
+        Assertions.assertEquals(true, uriRef6.hasAuthority())
+        Assertions.assertEquals("%6A%6F%68%6E@example.com", uriRef6.authority.toString())
+        Assertions.assertEquals("%6A%6F%68%6E", uriRef6.userinfo)
+        Assertions.assertEquals("example.com", uriRef6.host.toString())
+        Assertions.assertEquals("example.com", uriRef6.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef6.host!!.type)
+        Assertions.assertEquals(-1, uriRef6.port)
+        Assertions.assertEquals("", uriRef6.path)
+        Assertions.assertEquals(null, uriRef6.query)
+        Assertions.assertEquals(null, uriRef6.fragment)
 
-        URIReference uriRef12 = new URIReferenceParser().parse("http://[2001:0:3238:DFE1:63::FEFB]", UTF_8);;
-        assertEquals("http://[2001:0:3238:DFE1:63::FEFB]", uriRef12.toString());
-        assertEquals(false, uriRef12.isRelativeReference());
-        assertEquals("http", uriRef12.getScheme());
-        assertEquals(true, uriRef12.hasAuthority());
-        assertEquals("[2001:0:3238:DFE1:63::FEFB]", uriRef12.getAuthority().toString());
-        assertEquals(null, uriRef12.getUserinfo());
-        assertEquals("[2001:0:3238:DFE1:63::FEFB]", uriRef12.getHost().toString());
-        assertEquals("[2001:0:3238:DFE1:63::FEFB]", uriRef12.getHost().getValue());
-        assertEquals(IPV6, uriRef12.getHost().getType());
-        assertEquals(-1, uriRef12.getPort());
-        assertEquals("", uriRef12.getPath());
-        assertEquals(null, uriRef12.getQuery());
-        assertEquals(null, uriRef12.getFragment());
+        val uriRef7 = URIReferenceParser().parse("http://101.102.103.104", StandardCharsets.UTF_8)
 
-        URIReference uriRef13 = new URIReferenceParser().parse("http://[v1.fe80::a+en1]", UTF_8);;
-        assertEquals("http://[v1.fe80::a+en1]", uriRef13.toString());
-        assertEquals(false, uriRef13.isRelativeReference());
-        assertEquals("http", uriRef13.getScheme());
-        assertEquals(true, uriRef13.hasAuthority());
-        assertEquals("[v1.fe80::a+en1]", uriRef13.getAuthority().toString());
-        assertEquals(null, uriRef13.getUserinfo());
-        assertEquals("[v1.fe80::a+en1]", uriRef13.getHost().toString());
-        assertEquals("[v1.fe80::a+en1]", uriRef13.getHost().getValue());
-        assertEquals(IPVFUTURE, uriRef13.getHost().getType());
-        assertEquals(-1, uriRef13.getPort());
-        assertEquals("", uriRef13.getPath());
-        assertEquals(null, uriRef13.getQuery());
-        assertEquals(null, uriRef13.getFragment());
+        Assertions.assertEquals("http://101.102.103.104", uriRef7.toString())
+        Assertions.assertEquals(false, uriRef7.isRelativeReference)
+        Assertions.assertEquals("http", uriRef7.scheme)
+        Assertions.assertEquals(true, uriRef7.hasAuthority())
+        Assertions.assertEquals("101.102.103.104", uriRef7.authority.toString())
+        Assertions.assertEquals(null, uriRef7.userinfo)
+        Assertions.assertEquals("101.102.103.104", uriRef7.host.toString())
+        Assertions.assertEquals("101.102.103.104", uriRef7.host!!.value)
+        Assertions.assertEquals(HostType.IPV4, uriRef7.host!!.type)
+        Assertions.assertEquals(-1, uriRef7.port)
+        Assertions.assertEquals("", uriRef7.path)
+        Assertions.assertEquals(null, uriRef7.query)
+        Assertions.assertEquals(null, uriRef7.fragment)
 
-        URIReference uriRef14 = new URIReferenceParser().parse("http://%65%78%61%6D%70%6C%65%2E%63%6F%6D", UTF_8);;
-        assertEquals("http://%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.toString());
-        assertEquals(false, uriRef14.isRelativeReference());
-        assertEquals("http", uriRef14.getScheme());
-        assertEquals(true, uriRef14.hasAuthority());
-        assertEquals("%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.getAuthority().toString());
-        assertEquals(null, uriRef14.getUserinfo());
-        assertEquals("%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.getHost().toString());
-        assertEquals("%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.getHost().getValue());
-        assertEquals(REGNAME, uriRef14.getHost().getType());
-        assertEquals(-1, uriRef14.getPort());
-        assertEquals("", uriRef14.getPath());
-        assertEquals(null, uriRef14.getQuery());
-        assertEquals(null, uriRef14.getFragment());
+        val uriRef8 =
+            URIReferenceParser().parse("http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", StandardCharsets.UTF_8)
 
-        URIReference uriRef15 = new URIReferenceParser().parse("http://", UTF_8);;
-        assertEquals(false, uriRef15.isRelativeReference());
-        assertEquals("http", uriRef15.getScheme());
-        assertEquals(true, uriRef15.hasAuthority());
-        assertEquals("", uriRef15.getAuthority().toString());
-        assertEquals(null, uriRef15.getUserinfo());
-        assertEquals("", uriRef15.getHost().toString());
-        assertEquals("", uriRef15.getHost().getValue());
-        assertEquals(REGNAME, uriRef15.getHost().getType());
-        assertEquals(-1, uriRef15.getPort());
-        assertEquals("", uriRef15.getPath());
-        assertEquals(null, uriRef15.getQuery());
-        assertEquals(null, uriRef15.getFragment());
+        Assertions.assertEquals("http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.toString())
+        Assertions.assertEquals(false, uriRef8.isRelativeReference)
+        Assertions.assertEquals("http", uriRef8.scheme)
+        Assertions.assertEquals(true, uriRef8.hasAuthority())
+        Assertions.assertEquals("[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.authority.toString())
+        Assertions.assertEquals(null, uriRef8.authority!!.userinfo)
+        Assertions.assertEquals("[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.host.toString())
+        Assertions.assertEquals("[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]", uriRef8.host!!.value)
+        Assertions.assertEquals(HostType.IPV6, uriRef8.host!!.type)
+        Assertions.assertEquals(-1, uriRef8.port)
+        Assertions.assertEquals("", uriRef8.path)
+        Assertions.assertEquals(null, uriRef8.query)
+        Assertions.assertEquals(null, uriRef8.fragment)
 
-        URIReference uriRef16 = new URIReferenceParser().parse("http:///a", UTF_8);;
-        assertEquals(false, uriRef16.isRelativeReference());
-        assertEquals("http", uriRef16.getScheme());
-        assertEquals(true, uriRef16.hasAuthority());
-        assertEquals("", uriRef16.getAuthority().toString());
-        assertEquals(null, uriRef16.getUserinfo());
-        assertEquals("", uriRef16.getHost().toString());
-        assertEquals("", uriRef16.getHost().getValue());
-        assertEquals(REGNAME, uriRef16.getHost().getType());
-        assertEquals(-1, uriRef16.getPort());
-        assertEquals("/a", uriRef16.getPath());
-        assertEquals(null, uriRef16.getQuery());
-        assertEquals(null, uriRef16.getFragment());
+        val uriRef9 = URIReferenceParser().parse("http://[2001:db8:0:1:1:1:1:1]", StandardCharsets.UTF_8)
 
-        URIReference uriRef17 = new URIReferenceParser().parse("http://example.com:80", UTF_8);;
-        assertEquals(false, uriRef17.isRelativeReference());
-        assertEquals("http", uriRef17.getScheme());
-        assertEquals(true, uriRef17.hasAuthority());
-        assertEquals("example.com:80", uriRef17.getAuthority().toString());
-        assertEquals(null, uriRef17.getUserinfo());
-        assertEquals("example.com", uriRef17.getHost().toString());
-        assertEquals("example.com", uriRef17.getHost().getValue());
-        assertEquals(REGNAME, uriRef17.getHost().getType());
-        assertEquals(80, uriRef17.getPort());
-        assertEquals("", uriRef17.getPath());
-        assertEquals(null, uriRef17.getQuery());
-        assertEquals(null, uriRef17.getFragment());
+        Assertions.assertEquals("http://[2001:db8:0:1:1:1:1:1]", uriRef9.toString())
+        Assertions.assertEquals(false, uriRef9.isRelativeReference)
+        Assertions.assertEquals("http", uriRef9.scheme)
+        Assertions.assertEquals(true, uriRef9.hasAuthority())
+        Assertions.assertEquals("[2001:db8:0:1:1:1:1:1]", uriRef9.authority.toString())
+        Assertions.assertEquals(null, uriRef9.userinfo)
+        Assertions.assertEquals("[2001:db8:0:1:1:1:1:1]", uriRef9.host.toString())
+        Assertions.assertEquals("[2001:db8:0:1:1:1:1:1]", uriRef9.host!!.value)
+        Assertions.assertEquals(HostType.IPV6, uriRef9.host!!.type)
+        Assertions.assertEquals(-1, uriRef9.port)
+        Assertions.assertEquals("", uriRef9.path)
+        Assertions.assertEquals(null, uriRef9.query)
+        Assertions.assertEquals(null, uriRef9.fragment)
 
-        URIReference uriRef18 = new URIReferenceParser().parse("http://example.com:", UTF_8);;
-        assertEquals(false, uriRef18.isRelativeReference());
-        assertEquals("http", uriRef18.getScheme());
-        assertEquals(true, uriRef18.hasAuthority());
-        assertEquals("example.com", uriRef18.getAuthority().toString());
-        assertEquals(null, uriRef18.getUserinfo());
-        assertEquals("example.com", uriRef18.getHost().toString());
-        assertEquals("example.com", uriRef18.getHost().getValue());
-        assertEquals(REGNAME, uriRef18.getHost().getType());
-        assertEquals(-1, uriRef18.getPort());
-        assertEquals("", uriRef18.getPath());
-        assertEquals(null, uriRef18.getQuery());
-        assertEquals(null, uriRef18.getFragment());
+        val uriRef10 = URIReferenceParser().parse("http://[2001:0:9d38:6abd:0:0:0:42]", StandardCharsets.UTF_8)
 
-        URIReference uriRef19 = new URIReferenceParser().parse("http://example.com:001", UTF_8);;
-        assertEquals(false, uriRef19.isRelativeReference());
-        assertEquals("http", uriRef19.getScheme());
-        assertEquals(true, uriRef19.hasAuthority());
-        assertEquals("example.com:1", uriRef19.getAuthority().toString());
-        assertEquals(null, uriRef19.getAuthority().getUserinfo());
-        assertEquals("example.com", uriRef19.getHost().toString());
-        assertEquals("example.com", uriRef19.getHost().getValue());
-        assertEquals(REGNAME, uriRef19.getHost().getType());
-        assertEquals(1, uriRef19.getPort());
-        assertEquals("", uriRef19.getPath());
-        assertEquals(null, uriRef19.getQuery());
-        assertEquals(null, uriRef19.getFragment());
+        Assertions.assertEquals("http://[2001:0:9d38:6abd:0:0:0:42]", uriRef10.toString())
+        Assertions.assertEquals(false, uriRef10.isRelativeReference)
+        Assertions.assertEquals("http", uriRef10.scheme)
+        Assertions.assertEquals(true, uriRef10.hasAuthority())
+        Assertions.assertEquals("[2001:0:9d38:6abd:0:0:0:42]", uriRef10.authority.toString())
+        Assertions.assertEquals(null, uriRef10.userinfo)
+        Assertions.assertEquals("[2001:0:9d38:6abd:0:0:0:42]", uriRef10.host.toString())
+        Assertions.assertEquals("[2001:0:9d38:6abd:0:0:0:42]", uriRef10.host!!.value)
+        Assertions.assertEquals(HostType.IPV6, uriRef10.host!!.type)
+        Assertions.assertEquals(-1, uriRef10.port)
+        Assertions.assertEquals("", uriRef10.path)
+        Assertions.assertEquals(null, uriRef10.query)
+        Assertions.assertEquals(null, uriRef10.fragment)
 
-        URIReference uriRef20 = new URIReferenceParser().parse("http://example.com/a/b/c", UTF_8);;
-        assertEquals("http://example.com/a/b/c", uriRef20.toString());
-        assertEquals(false, uriRef20.isRelativeReference());
-        assertEquals("http", uriRef20.getScheme());
-        assertEquals(true, uriRef20.hasAuthority());
-        assertEquals("example.com", uriRef20.getAuthority().toString());
-        assertEquals(null, uriRef20.getAuthority().getUserinfo());
-        assertEquals("example.com", uriRef20.getHost().toString());
-        assertEquals("example.com", uriRef20.getHost().getValue());
-        assertEquals(REGNAME, uriRef20.getHost().getType());
-        assertEquals(-1, uriRef20.getPort());
-        assertEquals("/a/b/c", uriRef20.getPath());
-        assertEquals(null, uriRef20.getQuery());
-        assertEquals(null, uriRef20.getFragment());
+        val uriRef11 = URIReferenceParser().parse("http://[fe80::1]", StandardCharsets.UTF_8)
 
-        URIReference uriRef21 = new URIReferenceParser().parse("http://example.com/%61/%62/%63", UTF_8);;
-        assertEquals("http://example.com/%61/%62/%63", uriRef21.toString());
-        assertEquals(false, uriRef21.isRelativeReference());
-        assertEquals("http", uriRef21.getScheme());
-        assertEquals(true, uriRef21.hasAuthority());
-        assertEquals("example.com", uriRef21.getAuthority().toString());
-        assertEquals(null, uriRef21.getUserinfo());
-        assertEquals("example.com", uriRef21.getHost().toString());
-        assertEquals("example.com", uriRef21.getHost().getValue());
-        assertEquals(REGNAME, uriRef21.getHost().getType());
-        assertEquals(-1, uriRef21.getPort());
-        assertEquals("/%61/%62/%63", uriRef21.getPath());
-        assertEquals(null, uriRef21.getQuery());
-        assertEquals(null, uriRef21.getFragment());
+        Assertions.assertEquals("http://[fe80::1]", uriRef11.toString())
+        Assertions.assertEquals(false, uriRef11.isRelativeReference)
+        Assertions.assertEquals("http", uriRef11.scheme)
+        Assertions.assertEquals(true, uriRef11.hasAuthority())
+        Assertions.assertEquals("[fe80::1]", uriRef11.authority.toString())
+        Assertions.assertEquals(null, uriRef11.userinfo)
+        Assertions.assertEquals("[fe80::1]", uriRef11.host.toString())
+        Assertions.assertEquals("[fe80::1]", uriRef11.host!!.value)
+        Assertions.assertEquals(HostType.IPV6, uriRef11.host!!.type)
+        Assertions.assertEquals(-1, uriRef11.port)
+        Assertions.assertEquals("", uriRef11.path)
+        Assertions.assertEquals(null, uriRef11.query)
+        Assertions.assertEquals(null, uriRef11.fragment)
 
-        URIReference uriRef22 = new URIReferenceParser().parse("http:/a", UTF_8);;
-        assertEquals(false, uriRef22.isRelativeReference());
-        assertEquals("http", uriRef22.getScheme());
-        assertEquals(false, uriRef22.hasAuthority());
-        assertEquals(null, uriRef22.getAuthority());
-        assertEquals(null, uriRef22.getUserinfo());
-        assertEquals(null, uriRef22.getHost());
-        assertEquals(-1, uriRef22.getPort());
-        assertEquals("/a", uriRef22.getPath());
-        assertEquals(null, uriRef22.getQuery());
-        assertEquals(null, uriRef22.getFragment());
+        val uriRef12 = URIReferenceParser().parse("http://[2001:0:3238:DFE1:63::FEFB]", StandardCharsets.UTF_8)
 
-        URIReference uriRef23 = new URIReferenceParser().parse("http:a", UTF_8);;
-        assertEquals(false, uriRef23.isRelativeReference());
-        assertEquals("http", uriRef23.getScheme());
-        assertEquals(false, uriRef23.hasAuthority());
-        assertEquals(null, uriRef23.getAuthority());
-        assertEquals(null, uriRef23.getUserinfo());
-        assertEquals(null, uriRef23.getHost());
-        assertEquals(-1, uriRef23.getPort());
-        assertEquals("a", uriRef23.getPath());
-        assertEquals(null, uriRef23.getQuery());
-        assertEquals(null, uriRef23.getFragment());
+        Assertions.assertEquals("http://[2001:0:3238:DFE1:63::FEFB]", uriRef12.toString())
+        Assertions.assertEquals(false, uriRef12.isRelativeReference)
+        Assertions.assertEquals("http", uriRef12.scheme)
+        Assertions.assertEquals(true, uriRef12.hasAuthority())
+        Assertions.assertEquals("[2001:0:3238:DFE1:63::FEFB]", uriRef12.authority.toString())
+        Assertions.assertEquals(null, uriRef12.userinfo)
+        Assertions.assertEquals("[2001:0:3238:DFE1:63::FEFB]", uriRef12.host.toString())
+        Assertions.assertEquals("[2001:0:3238:DFE1:63::FEFB]", uriRef12.host!!.value)
+        Assertions.assertEquals(HostType.IPV6, uriRef12.host!!.type)
+        Assertions.assertEquals(-1, uriRef12.port)
+        Assertions.assertEquals("", uriRef12.path)
+        Assertions.assertEquals(null, uriRef12.query)
+        Assertions.assertEquals(null, uriRef12.fragment)
 
-        URIReference uriRef24 = new URIReferenceParser().parse("//", UTF_8);;
-        assertEquals(true, uriRef24.isRelativeReference());
-        assertEquals(null, uriRef24.getScheme());
-        assertEquals(true, uriRef24.hasAuthority());
-        assertEquals("", uriRef24.getAuthority().toString());
-        assertEquals(null, uriRef24.getUserinfo());
-        assertEquals("", uriRef24.getHost().toString());
-        assertEquals("", uriRef24.getHost().getValue());
-        assertEquals(REGNAME, uriRef24.getHost().getType());
-        assertEquals(-1, uriRef24.getPort());
-        assertEquals("", uriRef24.getPath());
-        assertEquals(null, uriRef24.getQuery());
-        assertEquals(null, uriRef24.getFragment());
+        val uriRef13 = URIReferenceParser().parse("http://[v1.fe80::a+en1]", StandardCharsets.UTF_8)
 
-        URIReference uriRef25 = new URIReferenceParser().parse("http://example.com?q", UTF_8);;
-        assertEquals(false, uriRef25.isRelativeReference());
-        assertEquals("http", uriRef25.getScheme());
-        assertEquals(true, uriRef25.hasAuthority());
-        assertEquals("example.com", uriRef25.getAuthority().toString());
-        assertEquals(null, uriRef25.getUserinfo());
-        assertEquals("example.com", uriRef25.getHost().toString());
-        assertEquals("example.com", uriRef25.getHost().getValue());
-        assertEquals(REGNAME, uriRef25.getHost().getType());
-        assertEquals(-1, uriRef25.getPort());
-        assertEquals("", uriRef25.getPath());
-        assertEquals("q", uriRef25.getQuery());
-        assertEquals(null, uriRef25.getFragment());
+        Assertions.assertEquals("http://[v1.fe80::a+en1]", uriRef13.toString())
+        Assertions.assertEquals(false, uriRef13.isRelativeReference)
+        Assertions.assertEquals("http", uriRef13.scheme)
+        Assertions.assertEquals(true, uriRef13.hasAuthority())
+        Assertions.assertEquals("[v1.fe80::a+en1]", uriRef13.authority.toString())
+        Assertions.assertEquals(null, uriRef13.userinfo)
+        Assertions.assertEquals("[v1.fe80::a+en1]", uriRef13.host.toString())
+        Assertions.assertEquals("[v1.fe80::a+en1]", uriRef13.host!!.value)
+        Assertions.assertEquals(HostType.IPVFUTURE, uriRef13.host!!.type)
+        Assertions.assertEquals(-1, uriRef13.port)
+        Assertions.assertEquals("", uriRef13.path)
+        Assertions.assertEquals(null, uriRef13.query)
+        Assertions.assertEquals(null, uriRef13.fragment)
 
-        URIReference uriRef26 = new URIReferenceParser().parse("http://example.com?", UTF_8);;
-        assertEquals(false, uriRef26.isRelativeReference());
-        assertEquals("http", uriRef26.getScheme());
-        assertEquals(true, uriRef26.hasAuthority());
-        assertEquals("example.com", uriRef26.getAuthority().toString());
-        assertEquals(null, uriRef26.getUserinfo());
-        assertEquals("example.com", uriRef26.getHost().toString());
-        assertEquals("example.com", uriRef26.getHost().getValue());
-        assertEquals(REGNAME, uriRef26.getHost().getType());
-        assertEquals(-1, uriRef26.getPort());
-        assertEquals("", uriRef26.getPath());
-        assertEquals("", uriRef26.getQuery());
-        assertEquals(null, uriRef26.getFragment());
+        val uriRef14 = URIReferenceParser().parse("http://%65%78%61%6D%70%6C%65%2E%63%6F%6D", StandardCharsets.UTF_8)
 
-        URIReference uriRef27 = new URIReferenceParser().parse("http://example.com#f", UTF_8);;
-        assertEquals(false, uriRef27.isRelativeReference());
-        assertEquals("http", uriRef27.getScheme());
-        assertEquals(true, uriRef27.hasAuthority());
-        assertEquals("example.com", uriRef27.getAuthority().toString());
-        assertEquals(null, uriRef27.getUserinfo());
-        assertEquals("example.com", uriRef27.getHost().toString());
-        assertEquals("example.com", uriRef27.getHost().getValue());
-        assertEquals(REGNAME, uriRef27.getHost().getType());
-        assertEquals(-1, uriRef27.getPort());
-        assertEquals("", uriRef27.getPath());
-        assertEquals(null, uriRef27.getQuery());
-        assertEquals("f", uriRef27.getFragment());
+        Assertions.assertEquals("http://%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.toString())
+        Assertions.assertEquals(false, uriRef14.isRelativeReference)
+        Assertions.assertEquals("http", uriRef14.scheme)
+        Assertions.assertEquals(true, uriRef14.hasAuthority())
+        Assertions.assertEquals("%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.authority.toString())
+        Assertions.assertEquals(null, uriRef14.userinfo)
+        Assertions.assertEquals("%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.host.toString())
+        Assertions.assertEquals("%65%78%61%6D%70%6C%65%2E%63%6F%6D", uriRef14.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef14.host!!.type)
+        Assertions.assertEquals(-1, uriRef14.port)
+        Assertions.assertEquals("", uriRef14.path)
+        Assertions.assertEquals(null, uriRef14.query)
+        Assertions.assertEquals(null, uriRef14.fragment)
 
-        URIReference uriRef28 = new URIReferenceParser().parse("http://example.com#", UTF_8);;
-        assertEquals(false, uriRef28.isRelativeReference());
-        assertEquals("http", uriRef28.getScheme());
-        assertEquals(true, uriRef28.hasAuthority());
-        assertEquals("example.com", uriRef28.getAuthority().toString());
-        assertEquals(null, uriRef28.getUserinfo());
-        assertEquals("example.com", uriRef28.getHost().toString());
-        assertEquals("example.com", uriRef28.getHost().getValue());
-        assertEquals(REGNAME, uriRef28.getHost().getType());
-        assertEquals(-1, uriRef28.getPort());
-        assertEquals("", uriRef28.getPath());
-        assertEquals(null, uriRef28.getQuery());
-        assertEquals("", uriRef28.getFragment());
+        val uriRef15 = URIReferenceParser().parse("http://", StandardCharsets.UTF_8)
 
-        URIReference uriRef29 = new URIReferenceParser().parse("", UTF_8);;
-        assertEquals(true, uriRef29.isRelativeReference());
-        assertEquals(null, uriRef29.getScheme());
-        assertEquals(false, uriRef29.hasAuthority());
-        assertEquals(null, uriRef29.getAuthority());
-        assertEquals(null, uriRef29.getUserinfo());
-        assertEquals(null, uriRef29.getHost());
-        assertEquals(-1, uriRef29.getPort());
-        assertEquals("", uriRef29.getPath());
-        assertEquals(null, uriRef29.getQuery());
-        assertEquals(null, uriRef29.getFragment());
+        Assertions.assertEquals(false, uriRef15.isRelativeReference)
+        Assertions.assertEquals("http", uriRef15.scheme)
+        Assertions.assertEquals(true, uriRef15.hasAuthority())
+        Assertions.assertEquals("", uriRef15.authority.toString())
+        Assertions.assertEquals(null, uriRef15.userinfo)
+        Assertions.assertEquals("", uriRef15.host.toString())
+        Assertions.assertEquals("", uriRef15.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef15.host!!.type)
+        Assertions.assertEquals(-1, uriRef15.port)
+        Assertions.assertEquals("", uriRef15.path)
+        Assertions.assertEquals(null, uriRef15.query)
+        Assertions.assertEquals(null, uriRef15.fragment)
 
-        assertThrowsIAE(
+        val uriRef16 = URIReferenceParser().parse("http:///a", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef16.isRelativeReference)
+        Assertions.assertEquals("http", uriRef16.scheme)
+        Assertions.assertEquals(true, uriRef16.hasAuthority())
+        Assertions.assertEquals("", uriRef16.authority.toString())
+        Assertions.assertEquals(null, uriRef16.userinfo)
+        Assertions.assertEquals("", uriRef16.host.toString())
+        Assertions.assertEquals("", uriRef16.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef16.host!!.type)
+        Assertions.assertEquals(-1, uriRef16.port)
+        Assertions.assertEquals("/a", uriRef16.path)
+        Assertions.assertEquals(null, uriRef16.query)
+        Assertions.assertEquals(null, uriRef16.fragment)
+
+        val uriRef17 = URIReferenceParser().parse("http://example.com:80", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef17.isRelativeReference)
+        Assertions.assertEquals("http", uriRef17.scheme)
+        Assertions.assertEquals(true, uriRef17.hasAuthority())
+        Assertions.assertEquals("example.com:80", uriRef17.authority.toString())
+        Assertions.assertEquals(null, uriRef17.userinfo)
+        Assertions.assertEquals("example.com", uriRef17.host.toString())
+        Assertions.assertEquals("example.com", uriRef17.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef17.host!!.type)
+        Assertions.assertEquals(80, uriRef17.port)
+        Assertions.assertEquals("", uriRef17.path)
+        Assertions.assertEquals(null, uriRef17.query)
+        Assertions.assertEquals(null, uriRef17.fragment)
+
+        val uriRef18 = URIReferenceParser().parse("http://example.com:", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef18.isRelativeReference)
+        Assertions.assertEquals("http", uriRef18.scheme)
+        Assertions.assertEquals(true, uriRef18.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef18.authority.toString())
+        Assertions.assertEquals(null, uriRef18.userinfo)
+        Assertions.assertEquals("example.com", uriRef18.host.toString())
+        Assertions.assertEquals("example.com", uriRef18.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef18.host!!.type)
+        Assertions.assertEquals(-1, uriRef18.port)
+        Assertions.assertEquals("", uriRef18.path)
+        Assertions.assertEquals(null, uriRef18.query)
+        Assertions.assertEquals(null, uriRef18.fragment)
+
+        val uriRef19 = URIReferenceParser().parse("http://example.com:001", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef19.isRelativeReference)
+        Assertions.assertEquals("http", uriRef19.scheme)
+        Assertions.assertEquals(true, uriRef19.hasAuthority())
+        Assertions.assertEquals("example.com:1", uriRef19.authority.toString())
+        Assertions.assertEquals(null, uriRef19.authority!!.userinfo)
+        Assertions.assertEquals("example.com", uriRef19.host.toString())
+        Assertions.assertEquals("example.com", uriRef19.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef19.host!!.type)
+        Assertions.assertEquals(1, uriRef19.port)
+        Assertions.assertEquals("", uriRef19.path)
+        Assertions.assertEquals(null, uriRef19.query)
+        Assertions.assertEquals(null, uriRef19.fragment)
+
+        val uriRef20 = URIReferenceParser().parse("http://example.com/a/b/c", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals("http://example.com/a/b/c", uriRef20.toString())
+        Assertions.assertEquals(false, uriRef20.isRelativeReference)
+        Assertions.assertEquals("http", uriRef20.scheme)
+        Assertions.assertEquals(true, uriRef20.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef20.authority.toString())
+        Assertions.assertEquals(null, uriRef20.authority!!.userinfo)
+        Assertions.assertEquals("example.com", uriRef20.host.toString())
+        Assertions.assertEquals("example.com", uriRef20.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef20.host!!.type)
+        Assertions.assertEquals(-1, uriRef20.port)
+        Assertions.assertEquals("/a/b/c", uriRef20.path)
+        Assertions.assertEquals(null, uriRef20.query)
+        Assertions.assertEquals(null, uriRef20.fragment)
+
+        val uriRef21 = URIReferenceParser().parse("http://example.com/%61/%62/%63", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals("http://example.com/%61/%62/%63", uriRef21.toString())
+        Assertions.assertEquals(false, uriRef21.isRelativeReference)
+        Assertions.assertEquals("http", uriRef21.scheme)
+        Assertions.assertEquals(true, uriRef21.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef21.authority.toString())
+        Assertions.assertEquals(null, uriRef21.userinfo)
+        Assertions.assertEquals("example.com", uriRef21.host.toString())
+        Assertions.assertEquals("example.com", uriRef21.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef21.host!!.type)
+        Assertions.assertEquals(-1, uriRef21.port)
+        Assertions.assertEquals("/%61/%62/%63", uriRef21.path)
+        Assertions.assertEquals(null, uriRef21.query)
+        Assertions.assertEquals(null, uriRef21.fragment)
+
+        val uriRef22 = URIReferenceParser().parse("http:/a", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef22.isRelativeReference)
+        Assertions.assertEquals("http", uriRef22.scheme)
+        Assertions.assertEquals(false, uriRef22.hasAuthority())
+        Assertions.assertEquals(null, uriRef22.authority)
+        Assertions.assertEquals(null, uriRef22.userinfo)
+        Assertions.assertEquals(null, uriRef22.host)
+        Assertions.assertEquals(-1, uriRef22.port)
+        Assertions.assertEquals("/a", uriRef22.path)
+        Assertions.assertEquals(null, uriRef22.query)
+        Assertions.assertEquals(null, uriRef22.fragment)
+
+        val uriRef23 = URIReferenceParser().parse("http:a", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef23.isRelativeReference)
+        Assertions.assertEquals("http", uriRef23.scheme)
+        Assertions.assertEquals(false, uriRef23.hasAuthority())
+        Assertions.assertEquals(null, uriRef23.authority)
+        Assertions.assertEquals(null, uriRef23.userinfo)
+        Assertions.assertEquals(null, uriRef23.host)
+        Assertions.assertEquals(-1, uriRef23.port)
+        Assertions.assertEquals("a", uriRef23.path)
+        Assertions.assertEquals(null, uriRef23.query)
+        Assertions.assertEquals(null, uriRef23.fragment)
+
+        val uriRef24 = URIReferenceParser().parse("//", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(true, uriRef24.isRelativeReference)
+        Assertions.assertEquals(null, uriRef24.scheme)
+        Assertions.assertEquals(true, uriRef24.hasAuthority())
+        Assertions.assertEquals("", uriRef24.authority.toString())
+        Assertions.assertEquals(null, uriRef24.userinfo)
+        Assertions.assertEquals("", uriRef24.host.toString())
+        Assertions.assertEquals("", uriRef24.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef24.host!!.type)
+        Assertions.assertEquals(-1, uriRef24.port)
+        Assertions.assertEquals("", uriRef24.path)
+        Assertions.assertEquals(null, uriRef24.query)
+        Assertions.assertEquals(null, uriRef24.fragment)
+
+        val uriRef25 = URIReferenceParser().parse("http://example.com?q", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef25.isRelativeReference)
+        Assertions.assertEquals("http", uriRef25.scheme)
+        Assertions.assertEquals(true, uriRef25.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef25.authority.toString())
+        Assertions.assertEquals(null, uriRef25.userinfo)
+        Assertions.assertEquals("example.com", uriRef25.host.toString())
+        Assertions.assertEquals("example.com", uriRef25.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef25.host!!.type)
+        Assertions.assertEquals(-1, uriRef25.port)
+        Assertions.assertEquals("", uriRef25.path)
+        Assertions.assertEquals("q", uriRef25.query)
+        Assertions.assertEquals(null, uriRef25.fragment)
+
+        val uriRef26 = URIReferenceParser().parse("http://example.com?", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef26.isRelativeReference)
+        Assertions.assertEquals("http", uriRef26.scheme)
+        Assertions.assertEquals(true, uriRef26.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef26.authority.toString())
+        Assertions.assertEquals(null, uriRef26.userinfo)
+        Assertions.assertEquals("example.com", uriRef26.host.toString())
+        Assertions.assertEquals("example.com", uriRef26.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef26.host!!.type)
+        Assertions.assertEquals(-1, uriRef26.port)
+        Assertions.assertEquals("", uriRef26.path)
+        Assertions.assertEquals("", uriRef26.query)
+        Assertions.assertEquals(null, uriRef26.fragment)
+
+        val uriRef27 = URIReferenceParser().parse("http://example.com#f", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef27.isRelativeReference)
+        Assertions.assertEquals("http", uriRef27.scheme)
+        Assertions.assertEquals(true, uriRef27.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef27.authority.toString())
+        Assertions.assertEquals(null, uriRef27.userinfo)
+        Assertions.assertEquals("example.com", uriRef27.host.toString())
+        Assertions.assertEquals("example.com", uriRef27.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef27.host!!.type)
+        Assertions.assertEquals(-1, uriRef27.port)
+        Assertions.assertEquals("", uriRef27.path)
+        Assertions.assertEquals(null, uriRef27.query)
+        Assertions.assertEquals("f", uriRef27.fragment)
+
+        val uriRef28 = URIReferenceParser().parse("http://example.com#", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(false, uriRef28.isRelativeReference)
+        Assertions.assertEquals("http", uriRef28.scheme)
+        Assertions.assertEquals(true, uriRef28.hasAuthority())
+        Assertions.assertEquals("example.com", uriRef28.authority.toString())
+        Assertions.assertEquals(null, uriRef28.userinfo)
+        Assertions.assertEquals("example.com", uriRef28.host.toString())
+        Assertions.assertEquals("example.com", uriRef28.host!!.value)
+        Assertions.assertEquals(HostType.REGNAME, uriRef28.host!!.type)
+        Assertions.assertEquals(-1, uriRef28.port)
+        Assertions.assertEquals("", uriRef28.path)
+        Assertions.assertEquals(null, uriRef28.query)
+        Assertions.assertEquals("", uriRef28.fragment)
+
+        val uriRef29 = URIReferenceParser().parse("", StandardCharsets.UTF_8)
+
+        Assertions.assertEquals(true, uriRef29.isRelativeReference)
+        Assertions.assertEquals(null, uriRef29.scheme)
+        Assertions.assertEquals(false, uriRef29.hasAuthority())
+        Assertions.assertEquals(null, uriRef29.authority)
+        Assertions.assertEquals(null, uriRef29.userinfo)
+        Assertions.assertEquals(null, uriRef29.host)
+        Assertions.assertEquals(-1, uriRef29.port)
+        Assertions.assertEquals("", uriRef29.path)
+        Assertions.assertEquals(null, uriRef29.query)
+        Assertions.assertEquals(null, uriRef29.fragment)
+
+        assertThrowsIAE<Throwable>(
             "The path value is invalid.",
-            () -> new URIReferenceParser().parse("1invalid://example.com", UTF_8));
+            { URIReferenceParser().parse("1invalid://example.com", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The host value \"v@w\" has an invalid character \"@\" at the index 1.",
-            () -> new URIReferenceParser().parse("http://u@v@w", UTF_8));
+            { URIReferenceParser().parse("http://u@v@w", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The port value \"1:2:3\" has an invalid character \":\" at the index 1.",
-            () -> new URIReferenceParser().parse("http://example.com:1:2:3", UTF_8));
+            { URIReferenceParser().parse("http://example.com:1:2:3", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The query value \"[invalid_query]\" has an invalid character \"[\" at the index 0.",
-            () -> new URIReferenceParser().parse("http://example.com?[invalid_query]", UTF_8));
+            { URIReferenceParser().parse("http://example.com?[invalid_query]", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The fragment value \"[invalid_fragment]\" has an invalid character \"[\" at the index 0.",
-            () -> new URIReferenceParser().parse("http://example.com#[invalid_fragment]", UTF_8));
+            { URIReferenceParser().parse("http://example.com#[invalid_fragment]", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The port value \"b\" has an invalid character \"b\" at the index 0.",
-            () -> new URIReferenceParser().parse("//a:b", UTF_8));
+            { URIReferenceParser().parse("//a:b", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The port value \":\" has an invalid character \":\" at the index 0.",
-            () -> new URIReferenceParser().parse("//::", UTF_8));
+            { URIReferenceParser().parse("//::", StandardCharsets.UTF_8) })
     }
 }

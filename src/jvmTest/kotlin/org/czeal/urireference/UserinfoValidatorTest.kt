@@ -13,38 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import org.junit.jupiter.api.Test;
-
-
-public class UserinfoValidatorTest
-{
+class UserinfoValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new UserinfoValidator().validate("userinfo", UTF_8);
-        new UserinfoValidator().validate("user:password", UTF_8);
-        new UserinfoValidator().validate("", UTF_8);
-        new UserinfoValidator().validate(null, UTF_8);
+    fun test_validate() {
+        UserinfoValidator().validate("userinfo", StandardCharsets.UTF_8)
+        UserinfoValidator().validate("user:password", StandardCharsets.UTF_8)
+        UserinfoValidator().validate("", StandardCharsets.UTF_8)
+        UserinfoValidator().validate(null, StandardCharsets.UTF_8)
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The userinfo value \"user password\" has an invalid character \" \" at the index 4.",
-            () -> new UserinfoValidator().validate("user password", UTF_8));
+            { UserinfoValidator().validate("user password", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The userinfo value \"user#password\" has an invalid character \"#\" at the index 4.",
-            () -> new UserinfoValidator().validate("user#password", UTF_8));
+            { UserinfoValidator().validate("user#password", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The userinfo value \"user/password\" has an invalid character \"/\" at the index 4.",
-            () -> new UserinfoValidator().validate("user/password", UTF_8));
+            { UserinfoValidator().validate("user/password", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The userinfo value \"%XXuserinfo\" has an invalid hex digit \"X\" at the index 1.",
-            () -> new UserinfoValidator().validate("%XXuserinfo", UTF_8));
+            { UserinfoValidator().validate("%XXuserinfo", StandardCharsets.UTF_8) })
     }
 }

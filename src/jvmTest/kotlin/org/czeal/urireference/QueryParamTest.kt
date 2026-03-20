@@ -13,62 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.QueryParam.Companion.parse
+import org.czeal.urireference.TestUtils.assertThrowsNPE
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.ThrowingSupplier
 
 
-import static org.czeal.urireference.TestUtils.assertThrowsNPE;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class QueryParamTest
-{
+class QueryParamTest {
     @Test
-    public void test_parse()
-    {
-        assertDoesNotThrow(() -> QueryParam.parse("k=v"));
-        assertDoesNotThrow(() -> QueryParam.parse("k="));
-        assertDoesNotThrow(() -> QueryParam.parse("=v"));
-        assertDoesNotThrow(() -> QueryParam.parse("k"));
-        assertDoesNotThrow(() -> QueryParam.parse(""));
-        assertDoesNotThrow(() -> QueryParam.parse("k=v=v"));
-        assertThrowsNPE("The input string must not be null.", () -> QueryParam.parse(null));
+    fun test_parse() {
+        Assertions.assertDoesNotThrow<QueryParam> { parse("k=v") }
+        Assertions.assertDoesNotThrow<QueryParam> { parse("k=") }
+        Assertions.assertDoesNotThrow<QueryParam> { parse("=v") }
+        Assertions.assertDoesNotThrow<QueryParam> { parse("k") }
+        Assertions.assertDoesNotThrow<QueryParam> { parse("") }
+        Assertions.assertDoesNotThrow<QueryParam> { parse("k=v=v") }
+        assertThrowsNPE<Throwable>("The input string must not be null.", { parse(null) })
     }
 
 
     @Test
-    public void test_toString()
-    {
-        assertEquals("k=v", QueryParam.parse("k=v").toString());
-        assertEquals("k=", QueryParam.parse("k=").toString());
-        assertEquals("=v", QueryParam.parse("=v").toString());
-        assertEquals("k", QueryParam.parse("k").toString());
-        assertEquals("", QueryParam.parse("").toString());
-        assertEquals("k=v=v", QueryParam.parse("k=v=v").toString());
+    fun test_toString() {
+        Assertions.assertEquals("k=v", parse("k=v").toString())
+        Assertions.assertEquals("k=", parse("k=").toString())
+        Assertions.assertEquals("=v", parse("=v").toString())
+        Assertions.assertEquals("k", parse("k").toString())
+        Assertions.assertEquals("", parse("").toString())
+        Assertions.assertEquals("k=v=v", parse("k=v=v").toString())
     }
 
 
     @Test
-    public void test_getKey()
-    {
-        assertEquals("k", QueryParam.parse("k=v").getKey());
-        assertEquals("k", QueryParam.parse("k=").getKey());
-        assertEquals("",  QueryParam.parse("=v").getKey());
-        assertEquals("k", QueryParam.parse("k").getKey());
-        assertEquals("",  QueryParam.parse("").getKey());
-        assertEquals("k", QueryParam.parse("k=v=v").getKey());
+    fun test_getKey() {
+        Assertions.assertEquals("k", parse("k=v").key)
+        Assertions.assertEquals("k", parse("k=").key)
+        Assertions.assertEquals("", parse("=v").key)
+        Assertions.assertEquals("k", parse("k").key)
+        Assertions.assertEquals("", parse("").key)
+        Assertions.assertEquals("k", parse("k=v=v").key)
     }
 
 
     @Test
-    public void test_getValue()
-    {
-        assertEquals("v", QueryParam.parse("k=v").getValue());
-        assertEquals("",  QueryParam.parse("k=").getValue());
-        assertEquals("v", QueryParam.parse("=v").getValue());
-        assertEquals((String)null, QueryParam.parse("k").getValue());
-        assertEquals((String)null, QueryParam.parse("").getValue());
-        assertEquals("v=v", QueryParam.parse("k=v=v").getValue());
+    fun test_getValue() {
+        Assertions.assertEquals("v", parse("k=v").value)
+        Assertions.assertEquals("", parse("k=").value)
+        Assertions.assertEquals("v", parse("=v").value)
+        Assertions.assertEquals(null, parse("k").value)
+        Assertions.assertEquals(null, parse("").value)
+        Assertions.assertEquals("v=v", parse("k=v=v").value)
     }
 }

@@ -13,36 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.czeal.urireference.TestUtils.assertThrowsNPE
+import org.junit.jupiter.api.Test
 
 
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import static org.czeal.urireference.TestUtils.assertThrowsNPE;
-import org.czeal.urireference.SchemeValidator;
-import org.junit.jupiter.api.Test;
-
-
-public class SchemeValidatorTest
-{
+class SchemeValidatorTest {
     @Test
-    public void test_validate()
-    {
-        new SchemeValidator().validate("http");
-        new SchemeValidator().validate("ftp");
-        new SchemeValidator().validate("a+f");
+    fun test_validate() {
+        SchemeValidator().validate("http")
+        SchemeValidator().validate("ftp")
+        SchemeValidator().validate("a+f")
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The scheme value \"1http\" has an invalid character \"1\" at the index 0.",
-            () -> new SchemeValidator().validate("1http"));
+            { SchemeValidator().validate("1http") })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The scheme value \"http_\" has an invalid character \"_\" at the index 4.",
-            () -> new SchemeValidator().validate("http_"));
+            { SchemeValidator().validate("http_") })
 
-        assertThrowsIAE(
-            "The scheme value must not be empty.", () -> new SchemeValidator().validate(""));
+        assertThrowsIAE<Throwable>(
+            "The scheme value must not be empty.", { SchemeValidator().validate("") })
 
-        assertThrowsNPE(
-            "The scheme value must not be null.", () -> new SchemeValidator().validate(null));
+        assertThrowsNPE<Throwable>(
+            "The scheme value must not be null.", { SchemeValidator().validate(null) })
     }
 }

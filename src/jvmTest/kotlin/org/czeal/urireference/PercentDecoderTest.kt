@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.PercentDecoder.Companion.decode
+import org.czeal.urireference.TestUtils.assertThrowsIAE
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.nio.charset.StandardCharsets
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.czeal.urireference.TestUtils.assertThrowsIAE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class PercentDecoderTest
-{
+class PercentDecoderTest {
     @Test
-    public void test_decode()
-    {
-        assertEquals("aA", PercentDecoder.decode("a%41", UTF_8));
-        assertEquals("aア", PercentDecoder.decode("a%e3%82%A2", UTF_8));
-        assertEquals("aアbc", PercentDecoder.decode("a%e3%82%A2bc", UTF_8));
+    fun test_decode() {
+        Assertions.assertEquals("aA", decode("a%41", StandardCharsets.UTF_8))
+        Assertions.assertEquals("aア", decode("a%e3%82%A2", StandardCharsets.UTF_8))
+        Assertions.assertEquals("aアbc", decode("a%e3%82%A2bc", StandardCharsets.UTF_8))
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The character \"X\" at the index 2 in the value \"a%XX\" is invalid as a hex digit.",
-            () -> PercentDecoder.decode("a%XX", UTF_8));
+            { decode("a%XX", StandardCharsets.UTF_8) })
 
-        assertThrowsIAE(
+        assertThrowsIAE<Throwable>(
             "The percent symbol \"%\" at the index 1 in the input value \"a%A\" is not followed by two characters.",
-            () -> PercentDecoder.decode("a%A", UTF_8));
+            { decode("a%A", StandardCharsets.UTF_8) })
     }
 }

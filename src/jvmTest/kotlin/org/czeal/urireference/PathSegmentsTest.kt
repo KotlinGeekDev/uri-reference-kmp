@@ -13,47 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.czeal.urireference;
+package org.czeal.urireference
+
+import org.czeal.urireference.PathSegments.Companion.parse
+import org.czeal.urireference.TestUtils.assertThrowsNPE
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.ThrowingSupplier
 
 
-import static org.czeal.urireference.TestUtils.assertThrowsNPE;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-
-public class PathSegmentsTest
-{
+class PathSegmentsTest {
     @Test
-    public void test_parse()
-    {
-        assertDoesNotThrow(() -> PathSegments.parse("/a/b/c"));
-        assertDoesNotThrow(() -> PathSegments.parse("/"));
-        assertDoesNotThrow(() -> PathSegments.parse(""));
-        assertDoesNotThrow(() -> PathSegments.parse(null));
+    fun test_parse() {
+        Assertions.assertDoesNotThrow<PathSegments?>(ThrowingSupplier { parse("/a/b/c") })
+        Assertions.assertDoesNotThrow<PathSegments?>(ThrowingSupplier { parse("/") })
+        Assertions.assertDoesNotThrow<PathSegments?>(ThrowingSupplier { parse("") })
+        Assertions.assertDoesNotThrow<PathSegments?>(ThrowingSupplier { parse(null) })
     }
 
 
     @Test
-    public void test_add()
-    {
-        assertDoesNotThrow(() -> PathSegments.parse("/a/b/c").add("d", "e"));
-        assertDoesNotThrow(() -> PathSegments.parse("/a/b/c").add(""));
+    fun test_add() {
+        Assertions.assertDoesNotThrow<PathSegments>(ThrowingSupplier { parse("/a/b/c")!!.add(listOf("d", "e")) })
+        Assertions.assertDoesNotThrow<PathSegments>(ThrowingSupplier { parse("/a/b/c")!!.add(listOf("")) })
 
-        assertThrowsNPE(
+        assertThrowsNPE<Throwable>(
             "The segments must not be null.",
-            () -> PathSegments.parse("/a/b/c").add((String[])null));
+            { parse("/a/b/c")!!.add(null) })
 
-        assertThrowsNPE(
+        assertThrowsNPE<Throwable>(
             "A segment must not be null.",
-            () -> PathSegments.parse("/a/b/c").add(new String[]{ null }));
+            { parse("/a/b/c")!!.add(listOf(null)) })
     }
 
 
     @Test
-    public void test_toString()
-    {
-        assertEquals("/a/b/c", PathSegments.parse("/a/b/c").toString());
-        assertEquals("/a/b/c/d/e", PathSegments.parse("/a/b/c").add("d", "e").toString());
+    fun test_toString() {
+        Assertions.assertEquals("/a/b/c", parse("/a/b/c").toString())
+        Assertions.assertEquals("/a/b/c/d/e", parse("/a/b/c")!!.add(listOf("d", "e")).toString())
     }
 }
