@@ -164,20 +164,20 @@ class Authority private constructor(res: ProcessResult) : Comparable<Authority?>
      * `true` if the specified object is equal to this [Authority]
      * object.
      */
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
 
-        if (obj == null || this !== obj) {
+        if (other == null || this::class != other::class) {
             return false
         }
 
-        val other = obj as Authority
+        val otherRef = other as Authority
 
         // Compare all components for equality.
-        return this.userinfo == other.userinfo &&
-                this.host == other.host && this.port == other.port
+        return this.userinfo == otherRef.userinfo &&
+                this.host == otherRef.host && this.port == otherRef.port
     }
 
 
