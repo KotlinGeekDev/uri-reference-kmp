@@ -2,4 +2,4 @@ pluginManagement {
 
 }
 
-rootProject.name = "urireference-kmp"
+rootProject.name = "uri-reference-kmp"

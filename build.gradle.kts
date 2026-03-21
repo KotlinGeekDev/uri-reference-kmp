@@ -65,9 +65,9 @@ kotlin {
 
 }
 
-group = "org.czeal"
-version = "1.0.2"
-description = "Java URI Library Compliant with RFC 3986"
+group = "io.github.kotlingeekdev"
+version = "1.0"
+description = "Kotlin Multiplatform URI Library Compliant with RFC 3986"
 
 publishing {
     publications.create<MavenPublication>("maven") {
