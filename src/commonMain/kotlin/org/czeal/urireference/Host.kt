@@ -102,20 +102,20 @@ class Host
      * `true` if the specified object is equal to this [Host]
      * object.
      */
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
 
-        if (obj == null || this::class != obj::class) {
+        if (other == null || this::class != other::class) {
             return false
         }
 
-        val other = obj as Host
+        val otherRef = other as Host
 
         // Compare all components for equality.
-        return this.type == other.type &&
-                this.value == other.value
+        return this.type == otherRef.type &&
+                this.value == otherRef.value
     }
 
 

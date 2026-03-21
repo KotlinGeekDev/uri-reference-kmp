@@ -120,7 +120,7 @@ class URIReferenceBuilder {
      * @return
      * `this` object.
      */
-    fun uriRef(uriRef: URIReference): URIReferenceBuilder {
+    fun uriRef(uriRef: URIReference?): URIReferenceBuilder {
         if (uriRef == null) {
             throw Utils.newNPE("The URI reference must not be null.")
         }
@@ -591,7 +591,7 @@ class URIReferenceBuilder {
          * A [URIReferenceBuilder] instance initialized with the given
          * URI reference information.
          */
-        fun fromURIReference(uriRef: URIReference): URIReferenceBuilder {
+        fun fromURIReference(uriRef: URIReference?): URIReferenceBuilder {
             return URIReferenceBuilder().uriRef(uriRef)
         }
     }

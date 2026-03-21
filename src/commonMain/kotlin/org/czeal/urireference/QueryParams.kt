@@ -37,7 +37,7 @@ import kotlin.jvm.JvmStatic
  * @author Hideki Ikeda
  */
 internal class QueryParams
-@JvmOverloads constructor(params: MutableList<QueryParam?> = ArrayList<QueryParam?>(0)) {
+@JvmOverloads constructor(params: MutableList<QueryParam?>? = ArrayList(0)) {
     /**
      * Internal storage for query parameters.
      */

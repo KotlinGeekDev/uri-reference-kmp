@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
 }
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     jvmToolchain(21)
 
     jvm {

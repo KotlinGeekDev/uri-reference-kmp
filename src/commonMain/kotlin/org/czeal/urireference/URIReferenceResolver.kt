@@ -54,7 +54,7 @@ internal class URIReferenceResolver {
      * @throws IllegalStateException
      * If this URI reference is not an absolute URI.
      */
-    fun resolve(uriRef: URIReference, baseUriRef: URIReference): URIReference {
+    fun resolve(uriRef: URIReference?, baseUriRef: URIReference?): URIReference {
         // Validate the arguments.
         validate(uriRef, baseUriRef)
 
@@ -62,20 +62,20 @@ internal class URIReferenceResolver {
         val res = URIReference.ProcessResult()
 
         // Set the charset.
-        res.charset = uriRef.charset
+        res.charset = uriRef!!.charset
 
         // The resolved URI reference is always a URI.
         res.relativeReference = false
 
         // Resolve the URI Reference against the base URI.
-        process(res, uriRef, baseUriRef)
+        process(res, uriRef, baseUriRef!!)
 
         // Return the result.
         return res.toURIReference()
     }
 
 
-    private fun validate(uriRef: URIReference, baseUriRef: URIReference) {
+    private fun validate(uriRef: URIReference?, baseUriRef: URIReference?) {
         // Ensure the URI reference to be resolved is not null.
         if (uriRef == null) {
             throw Utils.newNPE("The URI reference to be resolved must not be null.")
