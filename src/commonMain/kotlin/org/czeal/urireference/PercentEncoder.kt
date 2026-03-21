@@ -17,6 +17,7 @@ package org.czeal.urireference
 
 import com.fleeksoft.charset.Charset
 import com.fleeksoft.io.CharBufferFactory
+import com.fleeksoft.io.exception.CharacterCodingException
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -59,10 +60,19 @@ private constructor() {
      * RFC 3986, 2.3. Unreserved Characters](https://www.rfc-editor.org/rfc/rfc3986.section-2.3)
      */
     private fun process(
-        input: String, charset: Charset, preservedChars: MutableSet<Char?>?
+        input: String?, charset: Charset?, preservedChars: MutableSet<Char?>?
     ): String {
         // Validate the arguments.
-        validate(input, charset)
+//        validate(input, charset)
+        // Ensure the input is not null.
+        if (input == null) {
+            throw Utils.newNPE("A input must not be null.")
+        }
+
+        // Ensure the charset is not null.
+        if (charset == null) {
+            throw Utils.newNPE("A charset must not be null.")
+        }
 
         // The builder for the resultant string.
         val outputBuilder = StringBuilder()
@@ -86,18 +96,18 @@ private constructor() {
         return outputBuilder.toString()
     }
 
-
-    private fun validate(input: String, charset: Charset) {
-        // Ensure the input is not null.
-        if (input == null) {
-            throw Utils.newNPE("A input must not be null.")
-        }
-
-        // Ensure the charset is not null.
-        if (charset == null) {
-            throw Utils.newNPE("A charset must not be null.")
-        }
-    }
+    // Content copied to function above. Kept for archival.
+//    private fun validate(input: String?, charset: Charset?) {
+//        // Ensure the input is not null.
+//        if (input == null) {
+//            throw Utils.newNPE("A input must not be null.")
+//        }
+//
+//        // Ensure the charset is not null.
+//        if (charset == null) {
+//            throw Utils.newNPE("A charset must not be null.")
+//        }
+//    }
 
 
     private fun isPreserved(preservedChars: MutableSet<Char?>?, c: Char): Boolean {
@@ -187,7 +197,7 @@ private constructor() {
         @JvmOverloads
         @JvmStatic
         fun encode(
-            input: String, charset: Charset, preservedChars: MutableSet<Char?>? = null
+            input: String?, charset: Charset?, preservedChars: MutableSet<Char?>? = null
         ): String {
             return PercentEncoder().process(input, charset, preservedChars)
         }

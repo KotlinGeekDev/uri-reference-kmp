@@ -39,9 +39,18 @@ internal class PercentDecoder
  * The private constructor.
  */
 private constructor() : PercentEncodedStringProcessor() {
-    private fun process(input: String, charset: Charset): String? {
+    private fun process(input: String?, charset: Charset?): String? {
         // Validate the input.
-        validate(input, charset)
+//        validate(input, charset)
+        // Ensure the input is not null.
+        if (input == null) {
+            throw Utils.newNPE("A input must not be null.")
+        }
+
+        // Ensure the charset is not null.
+        if (charset == null) {
+            throw Utils.newNPE("A charset must not be null.")
+        }
 
         // Process the input.
         return process(
@@ -52,17 +61,19 @@ private constructor() : PercentEncodedStringProcessor() {
     }
 
 
-    private fun validate(input: String, charset: Charset) {
-        // Ensure the input is not null.
-        if (input == null) {
-            throw Utils.newNPE("A input must not be null.")
-        }
-
-        // Ensure the charset is not null.
-        if (charset == null) {
-            throw Utils.newNPE("A charset must not be null.")
-        }
-    }
+    // Made obsolete by copying content into function above.
+    // Keeping for archival purposes.
+//    private fun validate(input: String?, charset: Charset?) {
+//        // Ensure the input is not null.
+//        if (input == null) {
+//            throw Utils.newNPE("A input must not be null.")
+//        }
+//
+//        // Ensure the charset is not null.
+//        if (charset == null) {
+//            throw Utils.newNPE("A charset must not be null.")
+//        }
+//    }
 
 
     override fun onDecoded(
@@ -126,7 +137,7 @@ private constructor() : PercentEncodedStringProcessor() {
          * be decoded.
          */
         @JvmStatic
-        fun decode(input: String, charset: Charset): String? {
+        fun decode(input: String?, charset: Charset?): String? {
             return PercentDecoder().process(input, charset)
         }
     }

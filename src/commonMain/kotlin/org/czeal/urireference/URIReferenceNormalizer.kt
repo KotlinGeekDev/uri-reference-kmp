@@ -65,7 +65,7 @@ internal class URIReferenceNormalizer {
      * If the URI reference specified by the `uriRef` argument has
      * not been resolved yet.
      */
-    fun normalize(uriRef: URIReference): URIReference {
+    fun normalize(uriRef: URIReference?): URIReference {
         // Validate the URI reference.
         validate(uriRef)
 
@@ -73,7 +73,7 @@ internal class URIReferenceNormalizer {
         val res = URIReference.ProcessResult()
 
         // Set the charset.
-        res.charset = uriRef.charset
+        res.charset = uriRef!!.charset
 
         // The normalized URI reference is always a URI.
         res.relativeReference = false
@@ -98,7 +98,7 @@ internal class URIReferenceNormalizer {
     }
 
 
-    private fun validate(uriRef: URIReference) {
+    private fun validate(uriRef: URIReference?) {
         // Ensure the input URI reference is not null.
         if (uriRef == null) {
             throw Utils.newNPE("The URI reference must not be null.")

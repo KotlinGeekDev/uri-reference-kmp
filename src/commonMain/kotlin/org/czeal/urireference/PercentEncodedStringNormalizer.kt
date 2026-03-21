@@ -71,7 +71,7 @@ internal abstract class PercentEncodedStringNormalizer : PercentEncodedStringPro
 
         // Percent-encode back the characters, except for the unreserved characters
         // (e.g. alphabets).
-        normalized = PercentEncoder.encode(normalized, charset!!)
+        normalized = PercentEncoder.encode(normalized, charset)
 
         // Save the normalized value to the output builder.
         outputBuilder?.append(normalized)
