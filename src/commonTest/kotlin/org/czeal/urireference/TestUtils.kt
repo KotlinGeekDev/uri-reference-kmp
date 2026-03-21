@@ -67,6 +67,14 @@ object TestUtils {
     }
 }
 
+fun <T> assertDoesNotThrow(executable: InlineExecutable) {
+    try {
+        executable.execute()
+    } catch (e: Throwable) {
+        throw AssertionError(e)
+    }
+}
+
 fun interface InlineExecutable {
     @Throws(Throwable::class)
     fun execute()
