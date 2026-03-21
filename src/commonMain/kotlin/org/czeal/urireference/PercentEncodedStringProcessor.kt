@@ -19,6 +19,7 @@ import com.fleeksoft.charset.Charset
 import com.fleeksoft.io.ByteArrayOutputStream
 import com.fleeksoft.io.ByteBufferFactory
 import com.fleeksoft.io.CharBuffer
+import com.fleeksoft.io.exception.CharacterCodingException
 
 
 /**
@@ -115,7 +116,7 @@ internal abstract class PercentEncodedStringProcessor {
 
         while (currentIndex <= lastIndex) {
             // The character at the current index.
-            val c = input.get(currentIndex)
+            val c = input[currentIndex]
 
             if (c == '%') {
                 // If the character is "%", which indicates a percent-encoded
@@ -157,7 +158,7 @@ internal abstract class PercentEncodedStringProcessor {
         // If the next index (currentIndex + 3) exceeds the last index  or the
         // character at the next index is not '%'.
         val nextIndex = currentIndex + 3
-        if (nextIndex > lastIndex || input.get(nextIndex) != '%') {
+        if (nextIndex > lastIndex || input[nextIndex] != '%') {
             // Decode the percent-encoded values.
             decode(input, charset, outputBuilder, info)
 
@@ -178,7 +179,7 @@ internal abstract class PercentEncodedStringProcessor {
         )
 
         // The lower hex digit.
-        val lowerHexDigit = input.get(lowerHexDigitIndex)
+        val lowerHexDigit = input[lowerHexDigitIndex]
 
         // Read the lower hex digit in the percent-encoded value and convert it
         // to an int value.
@@ -193,7 +194,7 @@ internal abstract class PercentEncodedStringProcessor {
 
     private fun toIntOfHexDigit(input: String, index: Int, hexDigit: Char): Int {
         // Convert the hex digit to an int value.
-        val intOfHexDigit = _root_ide_package_.org.czeal.urireference.Utils.fromHexDigit(hexDigit)
+        val intOfHexDigit = Utils.fromHexDigit(hexDigit)
 
         // Ensure the hex digit is valid.
         if (intOfHexDigit == -1) {
