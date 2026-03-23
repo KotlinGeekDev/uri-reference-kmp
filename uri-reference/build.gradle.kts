@@ -24,9 +24,10 @@ kotlin {
     }
 
     android {
-        namespace = "io.kotlingeekdev.urireference"
+        namespace = "io.kotlingeekdev.urireference.android"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        enableCoreLibraryDesugaring = false
 
         aarMetadata {
             minCompileSdk = libs.versions.android.minSdk.get().toInt()
@@ -62,18 +63,21 @@ kotlin {
     iosX64 {
         binaries.framework {
             baseName = xcfName
+            binaryOption("bundleId", "io.kotlingeekdev.urireference")
         }
     }
 
     iosArm64 {
         binaries.framework {
             baseName = xcfName
+            binaryOption("bundleId", "io.kotlingeekdev.urireference")
         }
     }
 
     iosSimulatorArm64 {
         binaries.framework {
             baseName = xcfName
+            binaryOption("bundleId", "io.kotlingeekdev.urireference")
         }
     }
 
@@ -115,6 +119,10 @@ kotlin {
         }
     }
 
+}
+
+tasks.withType<Test>().configureEach {
+    maxHeapSize = "4g"
 }
 
 tasks.withType<Javadoc>() {
