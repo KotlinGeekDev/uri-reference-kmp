@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package urireference
-
-import io.kotlingeekdev.urireference.Utils
+package io.kotlingeekdev.urireference
 
 
 /**
