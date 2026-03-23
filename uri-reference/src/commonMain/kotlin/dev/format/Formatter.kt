@@ -16,9 +16,9 @@ package dev.format
  * limitations under the License.
  */
 class Formatter {
-    private val out: StringBuilder = StringBuilder();
+    private val out: StringBuilder = StringBuilder()
 
-    fun format(format: String, vararg args: Any?): Formatter? {
+    fun format(format: String, vararg args: Any?): Formatter {
         val formatBuffer = CharArrayBuffer(format.toCharArray())
         val parser = ParserStateMachine(formatBuffer)
         val transformer = Transformer(this)

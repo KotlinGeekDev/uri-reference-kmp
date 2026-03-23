@@ -30,7 +30,7 @@ class Transformer internal constructor(private val formatter: Formatter) {
     fun transform(token: FormatToken, argument: Any?): String { /* init data member to print */
         formatToken = token
         arg = argument
-        var result: String = when (token.conversionType) {
+        val result: String = when (token.conversionType) {
             'S', 's' -> {
                 transformFromString()
             }

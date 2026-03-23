@@ -20,15 +20,15 @@ class CharArrayBuffer : Buffer {
 
     protected val backingArray: CharArray
 
-    protected val offset: Int;
+    protected val offset: Int
 
     constructor(array: CharArray) : this(array.size, array, 0)
 
-    constructor(capacity:Int) : this(capacity, CharArray(capacity), 0);
+    constructor(capacity:Int) : this(capacity, CharArray(capacity), 0)
 
     constructor(capacity:Int, backingArray:CharArray, offset:Int) : super(capacity) {
-        this.backingArray = backingArray;
-        this.offset = offset;
+        this.backingArray = backingArray
+        this.offset = offset
     }
 
 
