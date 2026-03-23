@@ -1,57 +1,33 @@
-name: Release Library
 
+name: Publish
 on:
+  #  push:
+  #   branches: ["develop"]
   release:
-    types: [created]
+    types: [released, prereleased]
 
-permissions:
-  contents: write # Needed to push to gh-pages
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-
+  publish:
+    name: Release build and publish
+    runs-on: macOS-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Set up Java and Maven Central credentials
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '11'
-        server-id: central
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-        gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
-        gpg-passphrase: MAVEN_GPG_PASSPHRASE
-
-    - name: Set release version
-      run: mvn versions:set -DnewVersion=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')
-
-    - name: Commit release version
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git commit -am "Release ${{ github.event.release.tag_name }}"
-        git push origin HEAD:main
-
-    - name: Deploy to Maven Central
-      run: |
-        mvn -P release --batch-mode deploy -DskipTests
-      env:
-        MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
-
-    - name: Generate Javadoc
-      run: mvn javadoc:javadoc
-
-    - name: Deploy JavaDoc
-      uses: MathieuSoysal/Javadoc-publisher.yml@v3.0.2
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        javadoc-branch: gh-pages
-        java-version: 11
-        target-folder: '' # The URL will be https://<username>.github.io/<repo>/.
-        project: maven
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - name: Publish and release to MavenCentral
+        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}

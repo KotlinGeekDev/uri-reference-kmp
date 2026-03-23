@@ -82,7 +82,7 @@ then, in your module's `build.gradle(.kts)`, you need to add:
 // build.gradle.kts
 dependencies {
     //...
-    implementation("com.github.KotlinGeekDev.uri-reference-kmp:uri-reference:1.0")
+    implementation("com.github.KotlinGeekDev.uri-reference-kmp:uri-reference-kmp:v1.0")
     
 }
 
@@ -92,7 +92,7 @@ If you're including it in an Android app, you can just add:
 // app/build.gradle.kts
 dependencies {
     //...
-    implementation("com.github.KotlinGeekDev.uri-reference-kmp:uri-reference-android:1.0")
+    implementation("com.github.KotlinGeekDev.uri-reference-kmp:uri-reference-kmp-android:1.0")
 
 }
 ```
