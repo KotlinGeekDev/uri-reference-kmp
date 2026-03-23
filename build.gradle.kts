@@ -13,9 +13,9 @@ description = "Kotlin Multiplatform URI Library Compliant with RFC 3986"
 val isJitpack = System.getenv("JITPACK") == "true"
 
 mavenPublishing {
-    publishToMavenCentral()
+    publishToMavenCentral(automaticRelease = true)
     if (!isJitpack) {
-        //signAllPublications()
+        signAllPublications()
     }
 
     coordinates(group.toString(), rootProject.name, version.toString())
