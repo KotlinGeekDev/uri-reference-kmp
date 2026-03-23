@@ -1,80 +1,55 @@
+
 plugins {
-//    `java-library`
-    `maven-publish`
-    kotlin("multiplatform") version "2.3.10"
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
-    mavenCentral()
-}
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
-    jvmToolchain(21)
-
-    jvm {
-        testRuns["test"].executionTask.configure {
-            useJUnitPlatform()
-            testLogging {
-                events("passed", "skipped", "failed")
-            }
-        }
-    }
-
-//    androidTarget()
-    iosArm64()
-    iosSimulatorArm64()
-    iosX64()
-    linuxX64()
-    mingwX64()
-
-    macosX64()
-    macosArm64()
-
-    applyDefaultHierarchyTemplate()
-
-    sourceSets {
-        commonMain.dependencies {
-            implementation(kotlin("stdlib"))
-            implementation("com.fleeksoft.io:io:0.0.8")
-        }
-        commonTest.dependencies {
-            implementation(kotlin("test-common"))
-        }
-        jvmMain.dependencies {
-
-        }
-        jvmTest.dependencies {
-            val junitJupiterVersion = "5.10.0"
-            implementation(kotlin("test-junit5"))
-
-            implementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
-            implementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
-            implementation("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
-            runtimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
-            runtimeOnly("org.junit.vintage:junit-vintage-engine:$junitJupiterVersion")
-        }
-    }
-
-
+    alias(libs.plugins.vanniktech.mavenPublish)
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
+    alias(libs.plugins.android.lint) apply false
 }
 
 group = "io.github.kotlingeekdev"
 version = "1.0"
 description = "Kotlin Multiplatform URI Library Compliant with RFC 3986"
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["kotlin"])
-    }
-}
+val isJitpack = System.getenv("JITPACK") == "true"
 
-tasks.withType<Javadoc>() {
-    options.encoding = "UTF-8"
+mavenPublishing {
+    publishToMavenCentral()
+    if (!isJitpack) {
+        //signAllPublications()
+    }
+
+    coordinates(group.toString(), rootProject.name, version.toString())
+
+    pom {
+        name = "Uri-reference-kmp"
+        description = "Kotlin Multiplatform URI Library Compliant with RFC 3986, based on the original Java library."
+        url = "https://github.com/KotlinGeekDev/uri-reference-kmp"
+
+        licenses {
+            license {
+                name = "Apache License, Version 2.0"
+                url = "https://opensource.org/license/apache-2.0"
+                distribution = "https://opensource.org/license/apache-2.0"
+            }
+        }
+
+        developers {
+            developer {
+                name = "KotlinGeekDev"
+                email = "kotlingeek@protonmail.com"
+                url = "https://github.com/KotlinGeekDev"
+            }
+            developer {
+                name = "Hideki Ikeda"
+                email = "hidebike712@gmail.com"
+                url = "https://github.com/hidebike712"
+            }
+        }
+
+        scm {
+            connection = "scm:git:git://github.com/KotlinGeekDev/uri-reference-kmp.git"
+            url = "https://github.com/KotlinGeekDev/uri-reference-kmp"
+
+        }
+    }
 }
