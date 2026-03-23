@@ -16,6 +16,7 @@
 package io.kotlingeekdev.urireference
 
 import com.fleeksoft.charset.Charset
+import com.fleeksoft.charset.Charsets
 
 
 /**
@@ -29,7 +30,7 @@ import com.fleeksoft.charset.Charset
  * succeeds, this method creates a [Host] object. If parsing fails due to
  * invalid input string, it throws an `IllegalArgumentException`. Note that
  * this method works as if invoking it were equivalent to evaluating the expression
- * `[parse][.parse](host, [StandardCharsets].[ ][StandardCharsets.UTF_8])`.
+ * `[parse][.parse](host, [Charset].[ ][Charsets.UTF8])`.
  * 
  * @see [RFC 3986 - Uniform Resource
  * Identifier
