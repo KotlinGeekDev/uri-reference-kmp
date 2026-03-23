@@ -98,7 +98,7 @@ internal class HostTypeDeterminer {
         } catch (t: Throwable) {
             // If the check above fails, validate the host value as an IPvFuture
             // address.
-            _root_ide_package_.urireference.IpvFutureValidator().validate(enclosed)
+            IpvFutureValidator().validate(enclosed)
 
             // The host type is determined as an IPvFuture address.
             return HostType.IPVFUTURE

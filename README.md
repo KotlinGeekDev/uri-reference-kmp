@@ -1,49 +1,21 @@
-# Java URI Library Compliant with RFC 3986
+# Kotlin Multiplatform URI Library for RFC 3986
+
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-blue?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.kotlingeekdev/uri-reference-kmp?color=blue)](https://search.maven.org/search?q=g:io.github.kotlingeekdev)
+
+![badge-jvm](http://img.shields.io/badge/platform-jvm-DB413D.svg?style=flat)
+![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
+![badge-linux](http://img.shields.io/badge/platform-linux-2D3F6C.svg?style=flat)
+![badge-mac](http://img.shields.io/badge/platform-macos-111111.svg?style=flat)
+![badge-ios](http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat)
 
 ## Overview
 
-This library is designed in accordance with [RFC 3986](https://datatracker.ietf.org/doc/rfc3986/), the latest authoritative
-specification for URIs. It offers advanced URI management capabilities beyond those found in Java's standard `java.net.URI`
-class, which still conforms to the outdated [RFC 2396](https://datatracker.ietf.org/doc/rfc2396). Below are some of the
-challenges you may encounter with `java.net.URI`:
+This is a Kotlin Multiplatform library for working with [RFC 3986](https://datatracker.ietf.org/doc/rfc3986/), 
+and is a fork of the [Java library](https://github.com/hidebike712/uri-reference).
 
-#### :red_circle: Host containing underscores (`_`)
-
-RFC 3986 permits underscores (`_`) in the host part of URI references; however, RFC 2396 does not allow them. `java.net.URI`
-class does not recognize these as valid, resulting in unexpected behaviors:
-
-```java
-// Create a URI whose host contains an underscore.
-java.net.URI u = new java.net.URI("http://my_host.com");
-
-// This outputs 'null'.
-System.out.println(u.getHost());
-```
-
-This issue has been acknowledged in multiple bug reports, such as [JDK-8019345](https://bugs.openjdk.org/browse/JDK-8019345)
-and [JDK-8221675](https://bugs.openjdk.org/browse/JDK-8221675), yet it remains unresolved, presenting significant challenges
-when working with such URIs.
-
-#### :red_circle: IPvFuture Host
-
-RFC 3986 introduces **IPvFuture** as a valid host type, such as in `v9.abc:def`, but `java.net.URI` fails to parse these,
-leading to exceptions:
-
-```java
-// This throws "java.net.URISyntaxException".
-new java.net.URI("http://[v9.abc:def]");
-```
-
-#### :red_circle: Scheme-only URI
-
-RFC 3986 allows scheme-only URIs such as `data:` but those URIs can't be parsed by `java.net.URI` class.
-
-```java
-// This throws "java.net.URISyntaxException".
-new java.net.URI("data:");
-```
-
-Using this library ensures compliance with modern URI standards and avoids these and other issues.
+The original author describes some benefits of using the library over Java's URI library
+(which could be of interest to JVM/Android consumers) in the [readme](https://github.com/hidebike712/uri-reference?tab=readme-ov-file#overview).
 
 The library offers four key functionalities for robust URI management:
 
@@ -55,143 +27,199 @@ The library offers four key functionalities for robust URI management:
 Each feature is designed to handle URIs accurately and effectively, ensuring reliable and precise management across various
 application contexts.
 
-## Installation
+## How to include the libary
+You can include the library from either Maven Central or Jitpack.
 
-```xml
-<dependency>
-    <groupId>org.czeal</groupId>
-    <artifactId>uri-reference</artifactId>
-    <version>{version}</version>
-</dependency>
+### Maven
+You can include the library in the common source set like this:
+```kotlin
+dependencies {
+    implementation("io.github.kotlingeekdev:uri-reference-kmp:1.0")
+
+}
+```
+
+### Jitpack
+Inside your root-level `build.gradle(.kts)` file, you should add `jitpack`:
+  ``` kotlin
+// build.gradle.kts
+allprojects {
+    repositories {
+        // ...
+        maven { setUrl("https://jitpack.io") }
+    }
+    // ...
+}
+```
+
+or
+
+``` groovy
+// build.gradle
+allprojects {
+    repositories {
+        // ...
+        maven { url "https://jitpack.io" }
+    }
+    // ...
+}
+```
+
+In newer projects, you need to also update the `settings.gradle(.kts)` file's `dependencyResolutionManagement` block:
+
+```
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }  // <--
+    }
+}
+```
+then, in your module's `build.gradle(.kts)`, you need to add:
+```kotlin
+// build.gradle.kts
+dependencies {
+    //...
+    implementation("com.github.KotlinGeekDev.uri-reference-kmp:uri-reference:1.0")
+    
+}
+
+```
+If you're including it in an Android app, you can just add:
+```kotlin
+// app/build.gradle.kts
+dependencies {
+    //...
+    implementation("com.github.KotlinGeekDev.uri-reference-kmp:uri-reference-android:1.0")
+
+}
 ```
 
 ## License
 
 Apache License, Version 2.0
 
-## Java Doc
-
-https://hidebike712.github.io/uri-reference/
-
 ## Usage
 
 <a id="parsing"></a>
 ### :white_check_mark: Parsing
 
-To parse URI references, use `URIReference.parse(String uriRef)` or `URIReference.parse(String uriRef, Charset charset)`. Below are some examples of using `URIReference.parse(String uriRef)`.
+To parse URI references, use `URIReference.parse(uriRef: String)` or `URIReference.parse(uriRef: String, charset: Charset)`. Below are some examples of using `URIReference.parse(uriRef: String)`.
 
 #### Example 1: Parse Basic URI
 
-```java
-URIReference uriRef = URIReference.parse("http://example.com/a/b"); // Parse.
+```kotlin
+val uriRef = URIReference.parse("http://example.com/a/b") // Parse.
 
-System.out.println(uriRef.toString());                // "http://example.com/a/b"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "example.com"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "REGNAME"
-System.out.println(uriRef.getHost().getValue());      // "example.com"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // "/a/b"
-System.out.println(uriRef.getQuery());                // null
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://example.com/a/b"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "example.com"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "REGNAME"
+println(uriRef.getHost().getValue())      // "example.com"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // "/a/b"
+println(uriRef.getQuery())                // null
+println(uriRef.getFragment())             // null
 ```
 
 #### Example 2: Parse Relative Reference
 
-```java
-URIReference uriRef = URIReference.parse("//example.com/a/b"); // Parse.
+```kotlin
+val uriRef = URIReference.parse("//example.com/a/b") // Parse.
 
-System.out.println(uriRef.toString());                // "//example.com/a/b"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // null
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "example.com"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "REGNAME"
-System.out.println(uriRef.getHost().getValue());      // "example.com"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // "/a/b"
-System.out.println(uriRef.getQuery());                // null
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "//example.com/a/b"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // null
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "example.com"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "REGNAME"
+println(uriRef.getHost().getValue())      // "example.com"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // "/a/b"
+println(uriRef.getQuery())                // null
+println(uriRef.getFragment())             // null
 ```
 
 #### Example 3: Parse URI with IPV4 Host
 
-```java
-URIReference uriRef = URIReference.parse("http://101.102.103.104"); // Parse.
+```kotlin
+val uriRef = URIReference.parse("http://101.102.103.104") // Parse.
 
-System.out.println(uriRef.toString());                // "http://101.102.103.104"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "101.102.103.104"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "IPV4"
-System.out.println(uriRef.getHost().getValue());      // "101.102.103.104"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // ""
-System.out.println(uriRef.getQuery());                // null
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://101.102.103.104"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "101.102.103.104"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "IPV4"
+println(uriRef.getHost().getValue())      // "101.102.103.104"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // ""
+println(uriRef.getQuery())                // null
+println(uriRef.getFragment())             // null
 ```
 
 #### Example 4: Parse URI with IPV6 Host
 
-```java
-URIReference uriRef = URIReference.parse("http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"); // Parse.
+```kotlin
+val uriRef = URIReference.parse("http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]") // Parse.
 
-System.out.println(uriRef.toString());                // "http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "IPV6"
-System.out.println(uriRef.getHost().getValue());      // "[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // ""
-System.out.println(uriRef.getQuery());                // null
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "IPV6"
+println(uriRef.getHost().getValue())      // "[2001:0db8:0001:0000:0000:0ab9:C0A8:0102]"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // ""
+println(uriRef.getQuery())                // null
+println(uriRef.getFragment())             // null
 ```
 
 #### Example 5: Parse URI with IPvFuture Host
 
-```java
-URIReference uriRef = URIReference.parse("http://[v9.abc:def]"); // Parse.
+```kotlin
+val uriRef = URIReference.parse("http://[v9.abc:def]") // Parse.
 
-System.out.println(uriRef.toString());                // "http://[v9.abc:def]"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "[v9.abc:def]"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "IPVFUTURE"
-System.out.println(uriRef.getHost().getValue());      // "[v9.abc:def]"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // ""
-System.out.println(uriRef.getQuery());                // null
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://[v9.abc:def]"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "[v9.abc:def]"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "IPVFUTURE"
+println(uriRef.getHost().getValue())      // "[v9.abc:def]"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // ""
+println(uriRef.getQuery())                // null
+println(uriRef.getFragment())             // null
 ```
 
 #### Example 6: Parse URI with Percent-encoded Host
 
-```java
-URIReference uriRef = URIReference.parse("http://%65%78%61%6D%70%6C%65.com"); // Parse.
+```kotlin
+val uriRef = URIReference.parse("http://%65%78%61%6D%70%6C%65.com") // Parse.
 
-System.out.println(uriRef.toString());                // "http://%65%78%61%6D%70%6C%65.com"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "%65%78%61%6D%70%6C%65.com"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "REGNAME"
-System.out.println(uriRef.getHost().getValue());      // "%65%78%61%6D%70%6C%65.com"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // ""
-System.out.println(uriRef.getQuery());                // null
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://%65%78%61%6D%70%6C%65.com"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "%65%78%61%6D%70%6C%65.com"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "REGNAME"
+println(uriRef.getHost().getValue())      // "%65%78%61%6D%70%6C%65.com"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // ""
+println(uriRef.getQuery())                // null
+println(uriRef.getFragment())             // null
 ```
 
 > [!WARNING]
@@ -202,30 +230,30 @@ System.out.println(uriRef.getFragment());             // null
 <a id="resolving"></a>
 ### :white_check_mark: Resolving
 
-To resolve a relative reference against a URI reference, use `resolve(String uriRef)` or `resolve(URIReference uriRef)`. Below is an example demonstrating how to resolve a relative reference against a base URI.
+To resolve a relative reference against a URI reference, use `resolve(uriRef: String)` or `resolve(uriRef: URIReference)`. Below is an example demonstrating how to resolve a relative reference against a base URI.
 
-```java
+```kotlin
 // A base URI.
-URIReference baseUri = URIReference.parse("http://example.com");
+val baseUri = URIReference.parse("http://example.com")
 
 // A relative reference.
-URIReference relRef = URIReference.parse("/a/b");
+val relRef = URIReference.parse("/a/b")
 
 // Resolve the relative reference against the base URI.
-URIReference resolved = baseUri.resolve(relRef);
+val resolved = baseUri.resolve(relRef)
 
-System.out.println(resolved.toString());                // "http://example.com/a/b"
-System.out.println(resolved.isRelativeReference());     // false
-System.out.println(resolved.getScheme());               // "http"
-System.out.println(resolved.hasAuthority());            // true
-System.out.println(resolved.getAuthority().toString()); // "example.com"
-System.out.println(resolved.getUserinfo());             // null
-System.out.println(resolved.getHost().getType());       // "REGNAME"
-System.out.println(resolved.getHost().getValue());      // "example.com"
-System.out.println(resolved.getPort());                 // -1
-System.out.println(resolved.getPath());                 // "/a/b"
-System.out.println(resolved.getQuery());                // null
-System.out.println(resolved.getFragment());             // null
+println(resolved.toString())                // "http://example.com/a/b"
+println(resolved.isRelativeReference())     // false
+println(resolved.getScheme())               // "http"
+println(resolved.hasAuthority())            // true
+println(resolved.getAuthority().toString()) // "example.com"
+println(resolved.getUserinfo())             // null
+println(resolved.getHost().getType())       // "REGNAME"
+println(resolved.getHost().getValue())      // "example.com"
+println(resolved.getPort())                 // -1
+println(resolved.getPath())                 // "/a/b"
+println(resolved.getQuery())                // null
+println(resolved.getFragment())             // null
 ```
 
 ---
@@ -237,89 +265,89 @@ For normalization, invoke `normalize()` on a `URIReference` instance to normaliz
 
 #### Example 1: Normalize URI with Mixed-Case Scheme
 
-```java
-URIReference normalized = URIReference.parse("hTTp://example.com") // Parse.
-                                      .normalize();                // Normalize.
+```kotlin
+val normalized = URIReference.parse("hTTp://example.com") // Parse.
+                                      .normalize()                // Normalize.
 
-System.out.println(normalized.toString());                // "http://example.com/"
-System.out.println(normalized.isRelativeReference());     // false
-System.out.println(normalized.getScheme());               // "http"
-System.out.println(normalized.hasAuthority());            // true
-System.out.println(normalized.getAuthority().toString()); // "example.com"
-System.out.println(normalized.getUserinfo());             // null
-System.out.println(normalized.getHost().getType());       // "REGNAME"
-System.out.println(normalized.getHost().getValue());      // "example.com"
-System.out.println(normalized.getPort());                 // -1
-System.out.println(normalized.getPath());                 // "/"
-System.out.println(normalized.getQuery());                // null
-System.out.println(normalized.getFragment());             // null
+println(normalized.toString())                // "http://example.com/"
+println(normalized.isRelativeReference())     // false
+println(normalized.getScheme())               // "http"
+println(normalized.hasAuthority())            // true
+println(normalized.getAuthority().toString()) // "example.com"
+println(normalized.getUserinfo())             // null
+println(normalized.getHost().getType())       // "REGNAME"
+println(normalized.getHost().getValue())      // "example.com"
+println(normalized.getPort())                 // -1
+println(normalized.getPath())                 // "/"
+println(normalized.getQuery())                // null
+println(normalized.getFragment())             // null
 ```
 
 #### Example 2: Normalize URI with Percent-Encoded Host
 
-```java
-URIReference normalized = URIReference.parse("http://%65%78%61%6D%70%6C%65.com") // Parse.
-                                      .normalize();                              // Normalize.
+```kotlin
+val normalized = URIReference.parse("http://%65%78%61%6D%70%6C%65.com") // Parse.
+                                      .normalize()                              // Normalize.
 
-System.out.println(normalized.toString());                // "http://example.com/"
-System.out.println(normalized.isRelativeReference());     // false
-System.out.println(normalized.getScheme());               // "http"
-System.out.println(normalized.hasAuthority());            // true
-System.out.println(normalized.getAuthority().toString()); // "example.com"
-System.out.println(normalized.getUserinfo());             // null
-System.out.println(normalized.getHost().getType());       // "REGNAME"
-System.out.println(normalized.getHost().getValue());      // "example.com"
-System.out.println(normalized.getPort());                 // -1
-System.out.println(normalized.getPath());                 // "/"
-System.out.println(normalized.getQuery());                // null
-System.out.println(normalized.getFragment());             // null
+println(normalized.toString())                // "http://example.com/"
+println(normalized.isRelativeReference())     // false
+println(normalized.getScheme())               // "http"
+println(normalized.hasAuthority())            // true
+println(normalized.getAuthority().toString()) // "example.com"
+println(normalized.getUserinfo())             // null
+println(normalized.getHost().getType())       // "REGNAME"
+println(normalized.getHost().getValue())      // "example.com"
+println(normalized.getPort())                 // -1
+println(normalized.getPath())                 // "/"
+println(normalized.getQuery())                // null
+println(normalized.getFragment())             // null
 ```
 
 #### Example 3: Normalize URI with Unresolved Path
 
-```java
-URIReference normalized = URIReference.parse("http://example.com/a/b/c/../d/") // Parse.
-                                      .normalize();                            // Normalize.
+```kotlin
+val normalized = URIReference.parse("http://example.com/a/b/c/../d/") // Parse.
+                                      .normalize()                            // Normalize.
 
-System.out.println(normalized.toString());                // "http://example.com/a/b/d/"
-System.out.println(normalized.isRelativeReference());     // false
-System.out.println(normalized.getScheme());               // "http"
-System.out.println(normalized.hasAuthority());            // true
-System.out.println(normalized.getAuthority().toString()); // "example.com"
-System.out.println(normalized.getUserinfo());             // null
-System.out.println(normalized.getHost().getType());       // "REGNAME"
-System.out.println(normalized.getHost().getValue());      // "example.com"
-System.out.println(normalized.getPort());                 // -1
-System.out.println(normalized.getPath());                 // "/a/b/d/"
-System.out.println(normalized.getQuery());                // null
-System.out.println(normalized.getFragment());             // null
+println(normalized.toString())                // "http://example.com/a/b/d/"
+println(normalized.isRelativeReference())     // false
+println(normalized.getScheme())               // "http"
+println(normalized.hasAuthority())            // true
+println(normalized.getAuthority().toString()) // "example.com"
+println(normalized.getUserinfo())             // null
+println(normalized.getHost().getType())       // "REGNAME"
+println(normalized.getHost().getValue())      // "example.com"
+println(normalized.getPort())                 // -1
+println(normalized.getPath())                 // "/a/b/d/"
+println(normalized.getQuery())                // null
+println(normalized.getFragment())             // null
 ```
 
 #### Example 4: Normalize Relative Reference
 
-```java
+```kotlin
 // Parse a relative reference.
-URIReference relRef = URIReference.parse("/a/b/c/../d/");
+val relRef = URIReference.parse("/a/b/c/../d/")
 
 // Resolve the relative reference against "http://example.com".
 // NOTE: Relative references must be resolved before normalization.
-URIReference resolved = relRef.resolve("http://example.com");
+val resolved = relRef.resolve("http://example.com")
 
 // Normalize the resolved URI.
-URIReference normalized = resolved.normalize();
+val normalized = resolved.normalize()
 
-System.out.println(normalized.toString());                // "http://example.com/a/b/d/"
-System.out.println(normalized.isRelativeReference());     // false
-System.out.println(normalized.getScheme());               // "http"
-System.out.println(normalized.hasAuthority());            // true
-System.out.println(normalized.getAuthority().toString()); // "example.com"
-System.out.println(normalized.getUserinfo());             // null
-System.out.println(normalized.getHost().getType());       // "REGNAME"
-System.out.println(normalized.getHost().getValue());      // "example.com"
-System.out.println(normalized.getPort());                 // -1
-System.out.println(normalized.getPath());                 // "/a/b/d/"
-System.out.println(normalized.getQuery());                // null
-System.out.println(normalized.getFragment());             // null
+println(normalized.toString())                // "http://example.com/a/b/d/"
+println(normalized.isRelativeReference())     // false
+println(normalized.getScheme())               // "http"
+println(normalized.hasAuthority())            // true
+println(normalized.getAuthority().toString()) // "example.com"
+println(normalized.getUserinfo())             // null
+println(normalized.getHost().getType())       // "REGNAME"
+println(normalized.getHost().getValue())      // "example.com"
+println(normalized.getPort())                 // -1
+println(normalized.getPath())                 // "/a/b/d/"
+println(normalized.getQuery())                // null
+println(normalized.getFragment())             // null
 ```
 
 > [!CAUTION]
@@ -336,49 +364,49 @@ To construct URI references, use `URIReferenceBuilder` class.
 
 #### Example 1: Construct Basic URI
 
-```java
-URIReference uriRef = new URIReferenceBuilder()
+```kotlin
+val uriRef = URIReferenceBuilder()
                           .setScheme("http")
                           .setHost("example.com")
                           .setPath("/a/b/c")
                           .appendQueryParam("k1", "v1")
-                          .build();
+                          .build()
 
-System.out.println(uriRef.toString());                // "http://example.com/a/b/c?k1=v1"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "example.com"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "REGNAME"
-System.out.println(uriRef.getHost().getValue());      // "example.com"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // "/a/b/c"
-System.out.println(uriRef.getQuery());                // "k1=v1"
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://example.com/a/b/c?k1=v1"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "example.com"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "REGNAME"
+println(uriRef.getHost().getValue())      // "example.com"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // "/a/b/c"
+println(uriRef.getQuery())                // "k1=v1"
+println(uriRef.getFragment())             // null
 ```
 
 #### Example 2: Construct URI from Existing URI
 
-```java
-URIReference uriRef = new URIReferenceBuilder()
+```kotlin
+val uriRef = URIReferenceBuilder()
                           .fromURIReference("http://example.com/a/b/c?k1=v1")
                           .appendPath("d", "e", "f")
                           .appendQueryParam("k2", "v2")
-                          .build();
+                          .build()
 
-System.out.println(uriRef.toString());                // "http://example.comd/a/b/c/d/e/f?k1=v1&k2=v2"
-System.out.println(uriRef.isRelativeReference());     // false
-System.out.println(uriRef.getScheme());               // "http"
-System.out.println(uriRef.hasAuthority());            // true
-System.out.println(uriRef.getAuthority().toString()); // "example.com"
-System.out.println(uriRef.getUserinfo());             // null
-System.out.println(uriRef.getHost().getType());       // "REGNAME"
-System.out.println(uriRef.getHost().getValue());      // "example.com"
-System.out.println(uriRef.getPort());                 // -1
-System.out.println(uriRef.getPath());                 // "/a/b/c/d/e/f"
-System.out.println(uriRef.getQuery());                // "k1=v1&k2=&v2"
-System.out.println(uriRef.getFragment());             // null
+println(uriRef.toString())                // "http://example.comd/a/b/c/d/e/f?k1=v1&k2=v2"
+println(uriRef.isRelativeReference())     // false
+println(uriRef.getScheme())               // "http"
+println(uriRef.hasAuthority())            // true
+println(uriRef.getAuthority().toString()) // "example.com"
+println(uriRef.getUserinfo())             // null
+println(uriRef.getHost().getType())       // "REGNAME"
+println(uriRef.getHost().getValue())      // "example.com"
+println(uriRef.getPort())                 // -1
+println(uriRef.getPath())                 // "/a/b/c/d/e/f"
+println(uriRef.getQuery())                // "k1=v1&k2=&v2"
+println(uriRef.getFragment())             // null
 ```
 
 > [!WARNING]
@@ -390,12 +418,12 @@ System.out.println(uriRef.getFragment());             // null
 
 This library designs most classes such as `URIReference` to be immutable. Here are some examples.
 
-```java
+```kotlin
 // Example 1: Invoking the "normalize()" method creates a new URIReference instance.
-URIReference normalized = URIReference.parse("hTTp://example.com").normalize();
+val normalized = URIReference.parse("hTTp://example.com").normalize()
 
 // Example 2: Invoking the "resolve(String uriRef)" method creates a new URIReference instance.
-URIReference resolved = URIReference.parse("http://example.com").resolve("/a/b");
+val resolved = URIReference.parse("http://example.com").resolve("/a/b")
 ```
 
 ## See Also
